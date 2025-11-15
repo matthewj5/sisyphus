@@ -6,12 +6,12 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #a2836e 0%, #6e7f5e 100%); /* earthy brown to muted green */
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #333;
+    color: #3e2c19; /* deep brown */
 }
 
 /* Loading Screen Styles */
@@ -21,7 +21,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, #1e293b, #0f172a);
+    background: linear-gradient(to bottom, #7c6f57, #4e4a36); /* earthy gradient */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -123,14 +123,14 @@ body {
 
 header {
     text-align: center;
-    color: white;
+    color: #e5d9c5; /* light sand */
     margin-bottom: 2rem;
 }
 
 header h1 {
     font-size: 3rem;
     margin-bottom: 0.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 2px 2px 4px rgba(62, 44, 25, 0.2); /* brown shadow */
 }
 
 .tagline {
@@ -139,10 +139,10 @@ header h1 {
 }
 
 main {
-    background: white;
+    background: #f5f0e6; /* off-white, earthy */
     border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 40px rgba(62, 44, 25, 0.15); /* brown shadow */
 }
 
 .card {
@@ -151,20 +151,20 @@ main {
 }
 
 .card h2 {
-    color: #667eea;
+    color: #6e7f5e; /* muted green */
     margin-bottom: 1rem;
     font-size: 2rem;
 }
 
 .card p {
     font-size: 1.1rem;
-    color: #666;
+    color: #5c4a2d; /* brown */
     margin-bottom: 2rem;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #a2836e 0%, #6e7f5e 100%); /* earthy brown to green */
+    color: #f5f0e6;
     border: none;
     padding: 1rem 2rem;
     font-size: 1.1rem;
@@ -176,7 +176,7 @@ main {
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 20px rgba(162, 131, 110, 0.3); /* brown shadow */
 }
 
 .btn-primary:active {
@@ -186,9 +186,9 @@ main {
 .output {
     margin-top: 2rem;
     padding: 1.5rem;
-    background: #f7f9fc;
+    background: #ede6db; /* light earthy */
     border-radius: 8px;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #a2836e; /* brown */
 }
 
 .output.hidden {
@@ -196,18 +196,18 @@ main {
 }
 
 .output h3 {
-    color: #667eea;
+    color: #6e7f5e; /* muted green */
     margin-bottom: 0.5rem;
 }
 
 .output p {
-    color: #555;
+    color: #5c4a2d;
     font-size: 1rem;
 }
 
 footer {
     text-align: center;
-    color: white;
+    color: #e5d9c5;
     margin-top: 2rem;
     font-size: 1rem;
     opacity: 0.9;
@@ -289,12 +289,12 @@ footer {
 }
 
 .section-title {
-    color: #764ba2;
+    color: #6e7f5e; /* muted green */
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
     text-align: center;
     padding-bottom: 1rem;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid #d2c2a6; /* sand */
 }
 
 .questions-container {
@@ -311,7 +311,7 @@ footer {
 .form-label {
     font-weight: 500;
     margin-bottom: 0.5rem;
-    color: #333;
+    color: #3e2c19;
 }
 
 .form-label .required {
@@ -321,22 +321,22 @@ footer {
 
 .form-input {
     padding: 0.75rem;
-    border: 2px solid #e0e0e0;
+    border: 2px solid #d2c2a6;
     border-radius: 6px;
     font-size: 1rem;
     transition: border-color 0.3s;
-    background: #fafafa;
+    background: #f5f0e6;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: #667eea;
-    background: white;
+    border-color: #6e7f5e;
+    background: #ede6db;
 }
 
 .form-input.error {
-    border-color: #e74c3c;
-    background: #fff5f5;
+    border-color: #a2836e;
+    background: #f5e6e0;
 }
 
 .form-input.textarea {
@@ -355,8 +355,8 @@ footer {
 }
 
 .btn-secondary {
-    background: #6c757d;
-    color: white;
+    background: #a2836e;
+    color: #f5f0e6;
     border: none;
     padding: 0.75rem 1.5rem;
     font-size: 1rem;
@@ -366,12 +366,12 @@ footer {
 }
 
 .btn-secondary:hover {
-    background: #5a6268;
+    background: #6e7f5e;
 }
 
 .btn-danger {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    color: white;
+    background: linear-gradient(135deg, #a2836e, #6e7f5e);
+    color: #f5f0e6;
     border: none;
     padding: 1rem 2rem;
     font-size: 1.1rem;
@@ -383,20 +383,20 @@ footer {
 
 .btn-danger:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+    box-shadow: 0 5px 20px rgba(162, 131, 110, 0.3);
 }
 
 /* Disclaimer styles */
 .disclaimer {
     margin-top: 2rem;
     padding: 1.5rem;
-    background: #fff5f5;
-    border: 2px solid #e74c3c;
+    background: #f5e6e0;
+    border: 2px solid #a2836e;
     border-radius: 8px;
 }
 
 .disclaimer h4 {
-    color: #c0392b;
+    color: #6e7f5e;
     margin-bottom: 1rem;
 }
 
@@ -413,7 +413,7 @@ footer {
 .disclaimer-footer {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #e74c3c;
+    border-top: 1px solid #a2836e;
 }
 
 .disclaimer-footer p {
@@ -422,12 +422,12 @@ footer {
 }
 
 .disclaimer .warning {
-    color: #c0392b;
+    color: #6e7f5e;
     font-weight: bold;
     font-style: italic;
     margin-top: 1rem;
     padding: 0.75rem;
-    background: #ffe0e0;
+    background: #ede6db;
     border-radius: 4px;
 }
 
@@ -446,7 +446,7 @@ footer {
 .timer-value {
     font-size: 5rem;
     font-weight: bold;
-    color: #667eea;
+    color: #a2836e;
     font-variant-numeric: tabular-nums;
     border: none;
     background: transparent;
@@ -458,13 +458,13 @@ footer {
 
 .timer-hint {
     font-size: 1rem;
-    color: #764ba2;
+    color: #6e7f5e;
     font-weight: 500;
     margin-top: 0.5rem;
 }
 
 .timer-warning {
-    color: #e74c3c !important;
+    color: #a2836e !important;
     animation: pulse 1s infinite;
 }
 
@@ -476,7 +476,7 @@ footer {
 
 /* Task queue styles */
 .task-queue {
-    background: #f7f9fc;
+    background: #ede6db;
     border-radius: 8px;
     padding: 1.5rem;
     margin: 2rem 0;
@@ -484,7 +484,7 @@ footer {
 }
 
 .task-queue h3 {
-    color: #667eea;
+    color: #6e7f5e;
     margin-bottom: 1rem;
     text-align: center;
 }
@@ -566,14 +566,14 @@ footer {
 }
 
 .task-item.current {
-    border-color: #667eea;
-    background: #f0f4ff;
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    border-color: #a2836e;
+    background: #ede6db;
+    box-shadow: 0 2px 8px rgba(162, 131, 110, 0.15);
 }
 
 .task-item.completed {
     opacity: 0.6;
-    background: #f0f0f0;
+    background: #d2c2a6;
 }
 
 .task-item.completed .task-text {
@@ -582,7 +582,7 @@ footer {
 
 .task-number {
     font-weight: bold;
-    color: #667eea;
+    color: #a2836e;
     min-width: 30px;
 }
 
@@ -601,12 +601,12 @@ footer {
 
 .task-status {
     font-size: 1.2rem;
-    color: #27ae60;
+    color: #6e7f5e;
 }
 
 .btn-delete {
-    background: #e74c3c;
-    color: white;
+    background: #a2836e;
+    color: #f5f0e6;
     border: none;
     padding: 0.4rem 0.8rem;
     border-radius: 4px;
@@ -616,7 +616,7 @@ footer {
 }
 
 .btn-delete:hover {
-    background: #c0392b;
+    background: #6e7f5e;
 }
 
 .no-tasks {
@@ -649,7 +649,7 @@ footer {
     margin: 2rem auto;
     border-radius: 8px;
     overflow: hidden;
-    background: #000;
+    background: #4e4a36;
 }
 
 #cameraVideo {
@@ -682,7 +682,7 @@ footer {
 
 .validation-status {
     padding: 1rem;
-    background: #f0f8ff;
+    background: #ede6db;
     border-radius: 8px;
     margin: 1rem 0;
 }
@@ -707,15 +707,15 @@ footer {
 }
 
 .validation-result.success {
-    background: #d4edda;
-    border: 2px solid #28a745;
-    color: #155724;
+    background: #e5d9c5;
+    border: 2px solid #6e7f5e;
+    color: #3e2c19;
 }
 
 .validation-result.failure {
-    background: #f8d7da;
-    border: 2px solid #dc3545;
-    color: #721c24;
+    background: #f5e6e0;
+    border: 2px solid #a2836e;
+    color: #3e2c19;
 }
 
 /* Hell page styles */
@@ -726,23 +726,23 @@ footer {
 }
 
 .hell-container h2 {
-    color: #e74c3c;
+    color: #a2836e;
     font-size: 2.5rem;
     margin-bottom: 1rem;
 }
 
 .hell-message {
     font-size: 1.3rem;
-    color: #c0392b;
+    color: #6e7f5e;
     font-weight: bold;
     margin-bottom: 2rem;
 }
 
 .hell-content {
-    background: #fff5f5;
+    background: #f5e6e0;
     padding: 2rem;
     border-radius: 8px;
-    border: 2px solid #e74c3c;
+    border: 2px solid #a2836e;
     margin-bottom: 2rem;
 }
 
