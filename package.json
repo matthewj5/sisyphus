@@ -1,0 +1,24 @@
+{
+  "name": "sisyphus",
+  "version": "1.0.0",
+  "description": "Making hard deadlines",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthewj5/sisyphus.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matthewj5/sisyphus/issues"
+  },
+  "homepage": "https://github.com/matthewj5/sisyphus#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
