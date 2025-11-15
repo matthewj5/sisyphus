@@ -8,7 +8,7 @@ let questionnaireCompleted = false;
 
 // Camera state
 let cameraStream = null;
-let capturedImageData = null;
+let capturedImages = []; // Array to store multiple images
 
 // Questionnaire state
 let currentSectionIndex = 0;
@@ -79,46 +79,118 @@ function capturePhoto() {
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     // Get image data as base64
-    capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
+    const imageData = canvas.toDataURL('image/jpeg', 0.8);
 
-    // Show preview
-    const preview = document.getElementById('capturedImagePreview');
-    preview.innerHTML = `<img src="${capturedImageData}" alt="Captured photo">`;
-    preview.classList.remove('hidden');
+    // Add to captured images array
+    capturedImages.push({
+        type: 'camera',
+        data: imageData,
+        timestamp: Date.now()
+    });
 
-    // Hide video, show preview
-    video.style.display = 'none';
+    // Update preview
+    updateImagesPreview();
 
-    // Update buttons
-    document.getElementById('capturePhotoBtn').classList.add('hidden');
-    document.getElementById('retakePhotoBtn').classList.remove('hidden');
+    // Show submit button
+    showSubmitButton();
 
-    // Stop camera stream
-    stopCamera();
-
-    // Automatically validate
-    validateWithClaude();
+    // Keep camera running for more captures
+    // Don't stop camera or hide video anymore
 }
 
-function retakePhoto() {
+function clearAllImages() {
+    // Clear all captured images
+    capturedImages = [];
+
     // Reset UI
-    document.getElementById('cameraVideo').style.display = 'block';
-    document.getElementById('capturedImagePreview').classList.add('hidden');
-    document.getElementById('capturePhotoBtn').classList.remove('hidden');
-    document.getElementById('retakePhotoBtn').classList.add('hidden');
+    updateImagesPreview();
+    document.getElementById('submitValidationBtn').classList.add('hidden');
+    document.getElementById('clearAllImagesBtn').classList.add('hidden');
     document.getElementById('validationStatus').classList.add('hidden');
     document.getElementById('validationResult').classList.add('hidden');
 
-    capturedImageData = null;
+    // Clear file input
+    const fileInput = document.getElementById('imageUploadInput');
+    if (fileInput) fileInput.value = '';
+}
 
-    // Restart camera
-    startCamera();
+function removeImage(index) {
+    capturedImages.splice(index, 1);
+    updateImagesPreview();
+
+    if (capturedImages.length === 0) {
+        document.getElementById('submitValidationBtn').classList.add('hidden');
+        document.getElementById('clearAllImagesBtn').classList.add('hidden');
+    }
+}
+
+function updateImagesPreview() {
+    const previewContainer = document.getElementById('uploadedImagesPreview');
+
+    if (capturedImages.length === 0) {
+        previewContainer.innerHTML = '';
+        return;
+    }
+
+    previewContainer.innerHTML = `
+        <h3>Selected Images (${capturedImages.length})</h3>
+        <div class="images-grid">
+            ${capturedImages.map((img, index) => `
+                <div class="image-preview-item">
+                    <img src="${img.data}" alt="Image ${index + 1}">
+                    <button class="remove-image-btn" onclick="removeImage(${index})">✕</button>
+                    <span class="image-source">${img.type === 'camera' ? '📸' : '📁'}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function showSubmitButton() {
+    if (capturedImages.length > 0) {
+        document.getElementById('submitValidationBtn').classList.remove('hidden');
+        document.getElementById('clearAllImagesBtn').classList.remove('hidden');
+    }
+}
+
+function handleFileUpload(event) {
+    const files = event.target.files;
+
+    if (files.length === 0) return;
+
+    // Process each file
+    Array.from(files).forEach(file => {
+        if (!file.type.startsWith('image/')) {
+            alert(`${file.name} is not an image file.`);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            capturedImages.push({
+                type: 'upload',
+                data: e.target.result,
+                timestamp: Date.now(),
+                filename: file.name
+            });
+
+            updateImagesPreview();
+            showSubmitButton();
+        };
+
+        reader.readAsDataURL(file);
+    });
 }
 
 async function validateWithClaude() {
+    if (capturedImages.length === 0) {
+        alert('Please capture or upload at least one image before submitting.');
+        return;
+    }
+
     const statusDiv = document.getElementById('validationStatus');
     const resultDiv = document.getElementById('validationResult');
-    
+
     // Show status
     statusDiv.classList.remove('hidden');
     resultDiv.classList.add('hidden');
@@ -128,6 +200,9 @@ async function validateWithClaude() {
         const currentTask = tasks[currentTaskIndex];
         const taskDescription = currentTask ? currentTask.text : 'the assigned task';
 
+        // Extract image data from captured images array
+        const images = capturedImages.map(img => img.data);
+
         // Send to backend API
         const response = await fetch('/api/validate-task', {
             method: 'POST',
@@ -135,7 +210,7 @@ async function validateWithClaude() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                image: capturedImageData,
+                images: images, // Send array of images
                 taskDescription: taskDescription
             })
         });
@@ -185,9 +260,9 @@ async function validateWithClaude() {
             <p>Failed to validate with Claude API. Please try again.</p>
         `;
 
-        // Allow retake
+        // Allow retry
         setTimeout(() => {
-            retakePhoto();
+            clearAllImages();
         }, 2000);
     }
 }
@@ -238,12 +313,21 @@ function showPage(pageId) {
     if (pageId === 'cameraPage') {
         // Reset camera UI
         document.getElementById('cameraVideo').style.display = 'block';
-        document.getElementById('capturedImagePreview').classList.add('hidden');
         document.getElementById('capturePhotoBtn').classList.remove('hidden');
-        document.getElementById('retakePhotoBtn').classList.add('hidden');
         document.getElementById('validationStatus').classList.add('hidden');
         document.getElementById('validationResult').classList.add('hidden');
-        capturedImageData = null;
+
+        // Clear previous images
+        capturedImages = [];
+        updateImagesPreview();
+
+        // Hide submit buttons
+        document.getElementById('submitValidationBtn').classList.add('hidden');
+        document.getElementById('clearAllImagesBtn').classList.add('hidden');
+
+        // Clear file input
+        const fileInput = document.getElementById('imageUploadInput');
+        if (fileInput) fileInput.value = '';
 
         // Start camera after a short delay to ensure page is visible
         setTimeout(() => {
@@ -729,8 +813,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Capture photo button
     document.getElementById('capturePhotoBtn').addEventListener('click', capturePhoto);
 
-    // Retake photo button
-    document.getElementById('retakePhotoBtn').addEventListener('click', retakePhoto);
+    // File upload input
+    document.getElementById('imageUploadInput').addEventListener('change', handleFileUpload);
+
+    // Submit validation button
+    document.getElementById('submitValidationBtn').addEventListener('click', validateWithClaude);
+
+    // Clear all images button
+    document.getElementById('clearAllImagesBtn').addEventListener('click', clearAllImages);
 
     // Restart button
     document.getElementById('restartBtn').addEventListener('click', restart);
