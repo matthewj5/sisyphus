@@ -1,9 +1,10 @@
 // Application state
 let timerInterval = null;
-let timeRemaining = 300; // 5 minutes in seconds
 let tasks = [];
-let isPaused = false;
-let questionnaireCompleted = false; // Track if questionnaire has been completed
+let currentTaskIndex = -1;
+let timeRemaining = 0;
+let timerStarted = false;
+let questionnaireCompleted = false;
 
 // Questionnaire state
 let currentSectionIndex = 0;
@@ -196,12 +197,27 @@ function formatTime(seconds) {
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
 
+function parseTimeInput(timeString) {
+    // Remove any non-digit or colon characters
+    const cleaned = timeString.replace(/[^\d:]/g, '');
+    const parts = cleaned.split(':');
+    
+    if (parts.length !== 2) return null;
+    
+    const mins = parseInt(parts[0]) || 0;
+    const secs = parseInt(parts[1]) || 0;
+    
+    if (mins < 0 || mins > 999 || secs < 0 || secs > 59) return null;
+    
+    return (mins * 60) + secs;
+}
+
 function updateTimerDisplay() {
     const timerValue = document.getElementById('timerValue');
-    timerValue.textContent = formatTime(timeRemaining);
+    timerValue.value = formatTime(timeRemaining);
 
     // Add warning class when time is running low
-    if (timeRemaining <= 30) {
+    if (timeRemaining <= 30 && timeRemaining > 0) {
         timerValue.classList.add('timer-warning');
     } else {
         timerValue.classList.remove('timer-warning');
@@ -210,90 +226,164 @@ function updateTimerDisplay() {
 
 function startTimer() {
     if (timerInterval) return; // Already running
-
-    isPaused = false;
-    document.getElementById('startTimer').classList.add('hidden');
-    document.getElementById('pauseTimer').classList.remove('hidden');
+    
+    timerStarted = true;
+    
+    // Hide add task section, show running section
+    document.getElementById('addTaskSection').classList.add('hidden');
+    document.getElementById('timerRunningSection').classList.remove('hidden');
 
     timerInterval = setInterval(() => {
-        if (!isPaused) {
-            timeRemaining--;
-            updateTimerDisplay();
+        timeRemaining--;
+        updateTimerDisplay();
 
-            if (timeRemaining <= 0) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                goToHell('Time ran out! The boulder has fallen.');
-            }
+        if (timeRemaining <= 0) {
+            // Current task finished
+            completeCurrentTask();
+            advanceToNextTask();
         }
     }, 1000);
 }
 
-function pauseTimer() {
-    isPaused = true;
-    document.getElementById('startTimer').classList.remove('hidden');
-    document.getElementById('pauseTimer').classList.add('hidden');
+function completeCurrentTask() {
+    if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+        tasks[currentTaskIndex].completed = true;
+        renderTasks();
+    }
 }
 
-function resetTimer() {
+function advanceToNextTask() {
+    currentTaskIndex++;
+    
+    if (currentTaskIndex >= tasks.length) {
+        // All tasks completed!
+        clearInterval(timerInterval);
+        timerInterval = null;
+        alert('🎉 Congratulations! All tasks completed! The boulder has reached the top!');
+        resetToTaskEntry();
+        return;
+    }
+    
+    // Start next task
+    const nextTask = tasks[currentTaskIndex];
+    timeRemaining = nextTask.duration;
+    updateTimerDisplay();
+    updateCurrentTaskDisplay();
+}
+
+function skipCurrentTask() {
+    if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+        completeCurrentTask();
+        advanceToNextTask();
+    }
+}
+
+function updateCurrentTaskDisplay() {
+    const currentTaskName = document.getElementById('currentTaskName');
+    if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+        currentTaskName.textContent = `Current: ${tasks[currentTaskIndex].text}`;
+    } else {
+        currentTaskName.textContent = 'No task selected';
+    }
+}
+
+function resetToTaskEntry() {
+    // Clear interval if running
     if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
     }
-    timeRemaining = 300;
-    isPaused = false;
+    
+    // Reset state
+    tasks = [];
+    currentTaskIndex = -1;
+    timeRemaining = 0;
+    timerStarted = false;
+    
+    // Show add task section, hide running section
+    document.getElementById('addTaskSection').classList.remove('hidden');
+    document.getElementById('timerRunningSection').classList.add('hidden');
+    document.getElementById('startAllBtn').classList.add('hidden');
+    
+    // Reset display
     updateTimerDisplay();
-    document.getElementById('startTimer').classList.remove('hidden');
-    document.getElementById('pauseTimer').classList.add('hidden');
+    updateCurrentTaskDisplay();
+    renderTasks();
 }
 
 // Task functions
 function addTask() {
     const taskInput = document.getElementById('taskInput');
+    const durationInput = document.getElementById('taskDuration');
     const taskText = taskInput.value.trim();
+    const durationText = durationInput.value.trim();
 
-    if (taskText === '') return;
+    if (taskText === '') {
+        alert('Please enter a task name.');
+        return;
+    }
+    
+    if (durationText === '') {
+        alert('Please enter a duration (MM:SS).');
+        return;
+    }
+    
+    const duration = parseTimeInput(durationText);
+    if (duration === null || duration <= 0) {
+        alert('Invalid duration. Please use MM:SS format (e.g., 05:00).');
+        return;
+    }
 
     tasks.push({
         id: Date.now(),
         text: taskText,
+        duration: duration,
         completed: false
     });
 
     taskInput.value = '';
+    durationInput.value = '';
     renderTasks();
-}
-
-function toggleTask(taskId) {
-    const task = tasks.find(t => t.id === taskId);
-    if (task) {
-        task.completed = !task.completed;
-        renderTasks();
+    
+    // Show start button if we have tasks
+    if (tasks.length > 0) {
+        document.getElementById('startAllBtn').classList.remove('hidden');
+        document.getElementById('noTasksMessage').classList.add('hidden');
     }
 }
 
 function deleteTask(taskId) {
+    if (timerStarted) {
+        alert('Cannot delete tasks while timer is running!');
+        return;
+    }
+    
     tasks = tasks.filter(t => t.id !== taskId);
     renderTasks();
+    
+    // Hide start button if no tasks
+    if (tasks.length === 0) {
+        document.getElementById('startAllBtn').classList.add('hidden');
+        document.getElementById('noTasksMessage').classList.remove('hidden');
+    }
 }
 
 function renderTasks() {
     const tasksList = document.getElementById('tasksList');
 
     if (tasks.length === 0) {
-        tasksList.innerHTML = '<li class="no-tasks">No tasks yet. Add one above!</li>';
+        tasksList.innerHTML = '';
         return;
     }
 
-    tasksList.innerHTML = tasks.map(task => `
-        <li class="task-item ${task.completed ? 'completed' : ''}">
-            <input
-                type="checkbox"
-                ${task.completed ? 'checked' : ''}
-                onchange="toggleTask(${task.id})"
-            >
+    tasksList.innerHTML = tasks.map((task, index) => `
+        <li class="task-item ${task.completed ? 'completed' : ''} ${index === currentTaskIndex ? 'current' : ''}">
+            <span class="task-number">${index + 1}.</span>
             <span class="task-text">${task.text}</span>
-            <button class="btn-delete" onclick="deleteTask(${task.id})">Delete</button>
+            <span class="task-duration">${formatTime(task.duration)}</span>
+            ${!timerStarted ? `<button class="btn-delete" onclick="deleteTask(${task.id})">Delete</button>` : ''}
+            ${task.completed ? '<span class="task-status">✓</span>' : ''}
+            ${index === currentTaskIndex && timerStarted ? '<span class="task-status">▶</span>' : ''}
         </li>
     `).join('');
 }
@@ -308,28 +398,39 @@ function goToHell(message) {
 // Restart the application
 function restart() {
     // Reset all state
-    tasks = [];
-    resetTimer();
-    renderTasks();
+    resetToTaskEntry();
 
     // Skip questionnaire if already completed, go directly to timer
     if (questionnaireCompleted) {
         showPage('timerPage');
     } else {
+        currentSectionIndex = 0;
+        formResponses = {};
+        
+        // Hide disclaimer
+        const disclaimerDiv = document.getElementById('disclaimer');
+        if (disclaimerDiv) {
+            disclaimerDiv.classList.add('hidden');
+        }
+        
+        // Re-render questionnaire from beginning
+        renderQuestionnaireSection();
         showPage('questionnairePage');
     }
-    currentSectionIndex = 0;
-    formResponses = {};
-    
-    // Hide disclaimer
-    const disclaimerDiv = document.getElementById('disclaimer');
-    if (disclaimerDiv) {
-        disclaimerDiv.classList.add('hidden');
+}
+
+function startAllTasks() {
+    if (tasks.length === 0) {
+        alert('Please add at least one task before starting!');
+        return;
     }
     
-    // Re-render questionnaire from beginning
-    renderQuestionnaireSection();
-    showPage('questionnairePage');
+    // Start with first task
+    currentTaskIndex = 0;
+    timeRemaining = tasks[0].duration;
+    updateTimerDisplay();
+    updateCurrentTaskDisplay();
+    startTimer();
 }
 
 // Event listeners
@@ -345,10 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionnaireForm = document.getElementById('questionnaireForm');
     questionnaireForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = document.getElementById('name').value;
-        console.log('User started journey:', name);
-        questionnaireCompleted = true; // Mark questionnaire as completed
-        showPage('timerPage');
+        
         if (validateCurrentSection()) {
             saveCurrentSection();
             console.log('User completed the descent into madness:', formResponses);
@@ -356,6 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Show a dramatic message before proceeding
             const confirmed = confirm('By submitting this form, you acknowledge that your soul is now property of Sisyphus Inc. Your exes have been notified. Proceed?');
             if (confirmed) {
+                questionnaireCompleted = true; // Mark questionnaire as completed
                 showPage('timerPage');
             }
         } else {
@@ -363,17 +462,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Timer controls
-    document.getElementById('startTimer').addEventListener('click', startTimer);
-    document.getElementById('pauseTimer').addEventListener('click', pauseTimer);
-
     // Task management
     document.getElementById('addTaskBtn').addEventListener('click', addTask);
     document.getElementById('taskInput').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('taskDuration').focus();
+        }
+    });
+    document.getElementById('taskDuration').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
             addTask();
         }
     });
+    
+    // Start all tasks button
+    document.getElementById('startAllBtn').addEventListener('click', startAllTasks);
+    
+    // Skip task button
+    document.getElementById('skipTaskBtn').addEventListener('click', skipCurrentTask);
 
     // Navigate to camera page
     document.getElementById('goToCameraBtn').addEventListener('click', () => {

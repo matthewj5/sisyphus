@@ -45,26 +45,37 @@
             <div id="timerPage" class="page hidden">
                 <div class="timer-container">
                     <h2>Push the Boulder!</h2>
+                    
+                    <!-- Timer Display -->
                     <div class="timer">
-                        <div id="timerValue" class="timer-value">05:00</div>
+                        <input type="text" id="timerValue" class="timer-value" value="00:00" maxlength="5" readonly>
+                        <p class="timer-hint" id="currentTaskName">No task selected</p>
                     </div>
                     
-                    <div class="timer-controls">
-                        <button id="startTimer" class="btn-primary">Start</button>
-                        <button id="pauseTimer" class="btn-secondary hidden">Pause</button>
-                        <button id="resetTimer" class="btn-danger">Reset</button>
+                    <!-- Task Queue Display -->
+                    <div class="task-queue">
+                        <h3>Task Queue</h3>
+                        <ul id="tasksList" class="tasks-list"></ul>
+                        <p class="no-tasks" id="noTasksMessage">Add tasks to begin your journey</p>
                     </div>
                     
-                    <div class="tasks-section">
-                        <h3>Tasks</h3>
-                        <div class="add-task">
-                            <input type="text" id="taskInput" placeholder="Enter a task...">
+                    <!-- Add Task Section (shown before start) -->
+                    <div id="addTaskSection" class="add-task-section">
+                        <div class="add-task-form">
+                            <input type="text" id="taskInput" placeholder="Enter task name..." class="task-name-input">
+                            <input type="text" id="taskDuration" placeholder="MM:SS" maxlength="5" class="task-duration-input">
                             <button id="addTaskBtn" class="btn-primary">Add Task</button>
                         </div>
-                        <ul id="tasksList" class="tasks-list"></ul>
+                        <button id="startAllBtn" class="btn-danger start-all-btn hidden">Start Working!</button>
                     </div>
                     
-                    <button id="goToCameraBtn" class="btn-secondary">Camera Check</button>
+                    <!-- Timer Running Display (shown after start) -->
+                    <div id="timerRunningSection" class="timer-running-section hidden">
+                        <p class="warning-text">⚠️ Timer is running! No pausing, no going back!</p>
+                        <button id="skipTaskBtn" class="btn-secondary">Skip Current Task</button>
+                    </div>
+                    
+                    <button id="goToCameraBtn" class="btn-secondary camera-btn">Camera Check</button>
                 </div>
             </div>
             
