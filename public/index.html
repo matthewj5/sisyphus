@@ -170,6 +170,17 @@
                         <button id="capturePhotoBtn" class="btn-primary">📸 Capture Photo</button>
                         <button id="retakePhotoBtn" class="btn-secondary hidden">Retake Photo</button>
                     </div>
+                    <div class="upload-section">
+                        <label for="imageUploadInput" class="upload-label">
+                            📁 Or upload images:
+                        </label>
+                        <input type="file" id="imageUploadInput" accept="image/*" multiple class="upload-input">
+                    </div>
+                    <div id="uploadedImagesPreview" class="uploaded-preview"></div>
+                    <div class="submit-controls">
+                        <button id="submitValidationBtn" class="btn-primary hidden">Submit for Validation</button>
+                        <button id="clearAllImagesBtn" class="btn-secondary hidden">Clear All</button>
+                    </div>
                     <div id="validationStatus" class="validation-status hidden">
                         <p class="loading-text">🤔 Checking with Claude...</p>
                     </div>

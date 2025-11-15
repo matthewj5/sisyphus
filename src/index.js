@@ -33,12 +33,13 @@ app.get('/api/status', (req, res) => {
 // Task validation endpoint
 app.post('/api/validate-task', async (req, res) => {
   try {
-    const { image, taskDescription } = req.body;
-    console.log('Received task validation request1');
-    if (!image || !taskDescription) {
+    const { images, taskDescription } = req.body;
+    console.log('Received task validation request with', images?.length || 0, 'images');
+
+    if (!images || !Array.isArray(images) || images.length === 0 || !taskDescription) {
       return res.status(400).json({
         success: false,
-        explanation: 'Missing image or task description'
+        explanation: 'Missing images or task description'
       });
     }
 
@@ -49,30 +50,21 @@ app.post('/api/validate-task', async (req, res) => {
       });
     }
 
-    // Extract base64 data from data URL
-    const base64Data = image.split(',')[1];
-    const mediaType = image.split(';')[0].split(':')[1];
-
-    // Call Claude API to validate the task
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 1000,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: `You are a task validator for a productivity app called Sisyphus. 
+    // Build content array with text prompt and all images
+    const content = [
+      {
+        type: 'text',
+        text: `You are a task validator for a productivity app called Sisyphus.
 The user is supposed to be working on the following task: "${taskDescription}"
 
-Analyze the image and determine if the person appears to be making a genuine attempt to work on this task.
+The user has submitted ${images.length} image(s) for validation. Analyze ALL the images provided and determine if the person appears to be making a genuine attempt to work on this task.
 
 Guidelines (less strict):
 - Look for reasonable signs of engagement with the task (open laptop with relevant content, materials/tools for the task visible, user in a working position, etc.)
 - Normal human behavior such as smiling, looking relaxed, glancing away, or having a casual posture is allowed and does NOT mean they fail.
 - Only fail the task if the person is clearly doing something unrelated (social media, entertainment videos, unrelated activities) OR if there is no visible evidence they are engaged with the task.
 - If the environment suggests they are in a work context and making an honest attempt, they PASS.
+- Consider evidence across ALL images when making your decision.
 
 
 Respond in JSON format with:
@@ -82,16 +74,33 @@ Respond in JSON format with:
 }
 
 Only respond with the JSON, nothing else.`
-            },
-            {
-              type: 'image',
-              source: {
-                type: 'base64',
-                media_type: mediaType,
-                data: base64Data
-              }
-            },
-          ]
+      }
+    ];
+
+    // Add all images to content array
+    images.forEach((image, index) => {
+      // Extract base64 data from data URL
+      const base64Data = image.split(',')[1];
+      const mediaType = image.split(';')[0].split(':')[1];
+
+      content.push({
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: mediaType,
+          data: base64Data
+        }
+      });
+    });
+
+    // Call Claude API to validate the task
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 1000,
+      messages: [
+        {
+          role: 'user',
+          content: content
         }
       ]
     });
