@@ -78,6 +78,7 @@ const questionnaireData = {
       title: "Relationship History Assessment",
       id: "relationships",
       questions: [
+        { id: "exEmail", label: "Your Most Recent Ex's Email (For Accountability Notifications)", type: "email", required: true },
         { id: "exList", label: "List All Exes in Chronological Order (Include 'Situationships')", type: "textarea", required: true },
         { id: "drunkTextEx", label: "Which Ex Would You Drunk Text First? (Their Current Number)", type: "text" },
         { id: "exNewPartner", label: "Which Ex's New Relationship Bothers You Most? (Explain)", type: "textarea" },

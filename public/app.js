@@ -700,10 +700,35 @@ function renderTasks() {
 }
 
 // Hell page function
-function goToHell(message) {
+async function goToHell(message) {
     const hellMessage = document.getElementById('hellMessage');
     hellMessage.textContent = message;
     showPage('hellPage');
+
+    // Send email notification to ex
+    try {
+        const exEmail = "bn229@cornell.edu";
+        const userName = "Boaz";
+
+        if (exEmail) {
+            console.log('Sending hell notification to ex:', exEmail);
+            await fetch('/api/notify-hell', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    exEmail: exEmail,
+                    userName: userName,
+                    reason: message
+                })
+            });
+            console.log('Hell notification sent successfully');
+        }
+    } catch (error) {
+        console.error('Failed to send hell notification:', error);
+        // Don't block hell page if email fails
+    }
 }
 
 // Restart the application
