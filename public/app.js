@@ -27,6 +27,15 @@ function hideLoadingScreen() {
     loadingScreen.classList.add('hidden');
 }
 
+function skipQuestionnaire() {
+    questionnaireCompleted = true;
+    showLoadingScreen('Skipping to productivity mode...');
+    setTimeout(() => {
+        hideLoadingScreen();
+        showPage('timerPage');
+    }, 2000);
+}
+
 // Page navigation
 function showPage(pageId) {
     const pages = document.querySelectorAll('.page');
@@ -39,9 +48,6 @@ function showPage(pageId) {
 
     // Start camera when showing camera page
     if (pageId === 'cameraPage') {
-        // Show loading while camera initializes
-        showLoadingScreen('Initializing camera...');
-        
         // Reset camera UI
         document.getElementById('cameraVideo').style.display = 'block';
         document.getElementById('capturedImagePreview').classList.add('hidden');
@@ -455,7 +461,7 @@ function startAllTasks() {
         alert('Please add at least one task before starting!');
         return;
     }
-    
+
     // Start with first task
     currentTaskIndex = 0;
     timeRemaining = tasks[0].duration;
@@ -478,6 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Questionnaire navigation
     document.getElementById('nextSection').addEventListener('click', nextSection);
     document.getElementById('prevSection').addEventListener('click', previousSection);
+    document.getElementById('skipQuestionnaireBtn').addEventListener('click', skipQuestionnaire);
     
     // Questionnaire form submission
     const questionnaireForm = document.getElementById('questionnaireForm');
@@ -547,12 +554,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('cameraTaskInfo').textContent =
                     `Prove you're working on: "${currentTask.text}"`;
             }
-            
-            // Hide loading screen once camera is ready
-            hideLoadingScreen();
         } catch (error) {
             console.error('Error accessing camera:', error);
-            hideLoadingScreen();
             alert('Unable to access camera. Please ensure camera permissions are granted.');
             goToHell('Camera access denied. You must enable camera to continue.');
         }
@@ -611,16 +614,12 @@ document.addEventListener('DOMContentLoaded', () => {
         capturedImageData = null;
 
         // Restart camera
-        showLoadingScreen('Restarting camera...');
         startCamera();
     }
 
     async function validateWithClaude() {
         const statusDiv = document.getElementById('validationStatus');
         const resultDiv = document.getElementById('validationResult');
-
-        // Show loading screen
-        showLoadingScreen('Validating with Claude AI...');
         
         // Show status
         statusDiv.classList.remove('hidden');
@@ -701,7 +700,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if all tasks are completed
         if (currentTaskIndex >= tasks.length) {
             // All tasks completed!
-            showLoadingScreen('🎉 All tasks completed!');
             setTimeout(() => {
                 hideLoadingScreen();
                 alert('🎉 Congratulations! All tasks completed! The boulder has reached the top!');

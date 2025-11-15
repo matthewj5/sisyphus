@@ -8,7 +8,7 @@
 </head>
 <body>
     <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen hidden">
+    <div id="loadingScreen" class="loading-screen page hidden">
         <svg viewBox="0 0 400 400" class="loading-animation">
             <!-- Sun -->
             <circle cx="60" cy="60" r="30" fill="#fbbf24" opacity="0.9" />
@@ -91,7 +91,10 @@
             <!-- Questionnaire Page -->
             <div id="questionnairePage" class="page">
                 <div class="questionnaire-container">
-                    <h2>The Ultimate Descent</h2>
+                    <div class="questionnaire-header">
+                        <h2>The Ultimate Descent</h2>
+                        <button id="skipQuestionnaireBtn" class="btn-skip">Skip to Timer</button>
+                    </div>
                     <p class="subtitle">A Journey from Normal to Complete Chaos</p>
                     
                     <div class="progress-bar">

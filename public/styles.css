@@ -228,6 +228,32 @@ footer {
     margin: 0 auto;
 }
 
+.questionnaire-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.questionnaire-header h2 {
+    margin: 0;
+}
+
+.btn-skip {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-skip:hover {
+    background: #5a6268;
+}
+
 .subtitle {
     text-align: center;
     color: #666;
