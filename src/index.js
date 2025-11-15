@@ -18,7 +18,7 @@ const anthropic = new Anthropic({
 });
 
 // Middleware
-app.use(express.json({ limit: '10mb' })); // For parsing JSON bodies with base64 images
+app.use(express.json({ limit: '50mb' })); // For parsing JSON bodies with base64 images
 app.use(express.static(path.join(__dirname, '../public')));
 
 // API endpoint
@@ -54,49 +54,49 @@ app.post('/api/validate-task', async (req, res) => {
     const mediaType = image.split(';')[0].split(':')[1];
 
     // Call Claude API to validate the task
-//     const message = await anthropic.messages.create({
-//       model: 'claude-3-5-sonnet-20241022',
-//       max_tokens: 1024,
-//       messages: [
-//         {
-//           role: 'user',
-//           content: [
-//             {
-//               type: 'image',
-//               source: {
-//                 type: 'base64',
-//                 media_type: mediaType,
-//                 data: base64Data
-//               }
-//             },
-//             {
-//               type: 'text',
-//               text: `You are a strict task validator for a productivity app called Sisyphus. The user is supposed to be working on the following task: "${taskDescription}"
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 1000,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `You are a task validator for a productivity app called Sisyphus. The user is supposed to be working on the following task: "${taskDescription}"
 
-// Analyze the image provided and determine if the person appears to be actually working on this task.
+Analyze the text provided and determine if the person appears to be actually working on this task.
 
-// Rules:
-// - Look for evidence they are genuinely working (computer screen with relevant content, tools, materials related to the task, etc.)
-// - If the image shows them distracted, on social media, watching videos unrelated to the task, or clearly not working, they FAIL
-// - If there's no clear evidence they're working on the specific task, they FAIL
-// - Be strict but fair - if they appear to be making a genuine effort on the task, they PASS
+Rules:
+- Look for evidence they are genuinely working (computer screen with relevant content, tools, materials related to the task, etc.)
+- If the image shows them distracted, on social media, watching videos unrelated to the task, or clearly not working, they FAIL
+- If there's no clear evidence they're working on the specific task, they FAIL
+- Be strict but fair - if they appear to be making a genuine effort on the task, they PASS
 
-// Respond in JSON format with:
-// {
-//   "success": true/false,
-//   "explanation": "Brief explanation of why they passed or failed (1-2 sentences)"
-// }
+Respond in JSON format with:
+{
+  "success": true/false,
+  "explanation": "Brief explanation of why they passed or failed (1-2 sentences)"
+}
 
-// Only respond with the JSON, nothing else.`
-//             }
-//           ]
-//         }
-//       ]
-//     });
-    const responseText = '{"success": "true", "explanation":"this is a test message."}';
+Only respond with the JSON, nothing else.`
+            },
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: mediaType,
+                data: base64Data
+              }
+            },
+          ]
+        }
+      ]
+    });
+    //const responseText = '{"success": "true", "explanation":"this is a test message."}';
 
     // Parse Claude's response
-    // const responseText = message.content[0].text;
+    const responseText = message.content[0].text;
     let validationResult;
 
     try {
