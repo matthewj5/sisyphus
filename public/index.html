@@ -12,25 +12,104 @@
             <h1>🪨 Sisyphus</h1>
             <p class="tagline">Making hard deadlines</p>
         </header>
-        
+
         <main>
-            <div class="card">
-                <h2>Welcome to Sisyphus</h2>
-                <p>Your journey begins here.</p>
-                <button id="actionBtn" class="btn-primary">Get Started</button>
+            <!-- Questionnaire Page -->
+            <div id="questionnairePage" class="page">
+                <div class="card">
+                    <h2>Welcome to Sisyphus</h2>
+                    <p>Answer a few questions to get started on your journey.</p>
+
+                    <form id="questionnaireForm">
+                        <div class="form-group">
+                            <label for="name">What is your name?</label>
+                            <input type="text" id="name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deadline">What's your deadline goal?</label>
+                            <input type="text" id="deadline" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motivation">What motivates you to meet deadlines?</label>
+                            <textarea id="motivation" rows="3" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Begin Your Journey</button>
+                    </form>
+                </div>
             </div>
-            
-            <div id="output" class="output hidden">
-                <h3>Status:</h3>
-                <p id="statusMessage"></p>
+
+            <!-- Timer Page -->
+            <div id="timerPage" class="page hidden">
+                <div class="card">
+                    <h2>Your Tasks</h2>
+                    <p>Add tasks and keep the timer running. Don't let it hit zero!</p>
+
+                    <div class="timer-display">
+                        <div class="timer-value" id="timerValue">05:00</div>
+                        <button id="startTimer" class="btn-secondary">Start Timer</button>
+                        <button id="pauseTimer" class="btn-secondary hidden">Pause Timer</button>
+                    </div>
+
+                    <div class="task-section">
+                        <h3>Add a Task</h3>
+                        <div class="task-input-group">
+                            <input type="text" id="taskInput" placeholder="Enter a task...">
+                            <button id="addTaskBtn" class="btn-primary">Add Task</button>
+                        </div>
+
+                        <div class="tasks-list">
+                            <h3>Your Tasks:</h3>
+                            <ul id="tasksList"></ul>
+                        </div>
+                    </div>
+
+                    <button id="goToCameraBtn" class="btn-primary">Validate Camera</button>
+                </div>
+            </div>
+
+            <!-- Camera Validation Page -->
+            <div id="cameraPage" class="page hidden">
+                <div class="card">
+                    <h2>Camera Validation</h2>
+                    <p>Validate your camera to continue or face the consequences!</p>
+
+                    <div class="camera-placeholder">
+                        <div class="camera-icon">📷</div>
+                        <p>Camera validation placeholder</p>
+                    </div>
+
+                    <div class="camera-buttons">
+                        <button id="cameraSuccessBtn" class="btn-success">Camera Works ✓</button>
+                        <button id="cameraFailBtn" class="btn-danger">Camera Failed ✗</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hell Page -->
+            <div id="hellPage" class="page hidden">
+                <div class="card hell-card">
+                    <h2>🔥 Welcome to Hell 🔥</h2>
+                    <p id="hellMessage">You have failed to meet your deadline!</p>
+
+                    <div class="hell-content">
+                        <div class="flames">🔥 🔥 🔥 🔥 🔥</div>
+                        <p class="hell-quote">"The boulder has rolled back down. Sisyphus must start again."</p>
+                        <div class="flames">🔥 🔥 🔥 🔥 🔥</div>
+                    </div>
+
+                    <button id="restartBtn" class="btn-primary">Start Over</button>
+                </div>
             </div>
         </main>
-        
+
         <footer>
             <p>Keep pushing that boulder! 💪</p>
         </footer>
     </div>
-    
+
     <script src="app.js"></script>
 </body>
 </html>
