@@ -270,6 +270,9 @@ async function validateWithClaude() {
 function handleValidationSuccess() {
     stopCamera();
 
+    // Move to next task after successful validation
+    currentTaskIndex++;
+
     // Check if all tasks are completed
     if (currentTaskIndex >= tasks.length) {
         // All tasks completed!
@@ -574,10 +577,9 @@ function advanceToNextTask() {
     // Always go to camera validation after a task finishes
     clearInterval(timerInterval);
     timerInterval = null;
-    showPage('cameraPage');
     
-    // Increment after showing camera page
-    currentTaskIndex++;
+    // Don't increment yet - validate the task we just finished first
+    showPage('cameraPage');
 }
 
 function skipCurrentTask() {

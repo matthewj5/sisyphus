@@ -35,6 +35,7 @@ app.post('/api/validate-task', async (req, res) => {
   try {
     const { images, taskDescription } = req.body;
     console.log('Received task validation request with', images?.length || 0, 'images');
+    console.log('Task Description:', taskDescription);
 
     if (!images || !Array.isArray(images) || images.length === 0 || !taskDescription) {
       return res.status(400).json({
