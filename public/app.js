@@ -253,22 +253,13 @@ function completeCurrentTask() {
 }
 
 function advanceToNextTask() {
+    // Always go to camera validation after a task finishes
+    clearInterval(timerInterval);
+    timerInterval = null;
+    showPage('cameraPage');
+    
+    // Increment after showing camera page
     currentTaskIndex++;
-    
-    if (currentTaskIndex >= tasks.length) {
-        // All tasks completed!
-        clearInterval(timerInterval);
-        timerInterval = null;
-        alert('🎉 Congratulations! All tasks completed! The boulder has reached the top!');
-        resetToTaskEntry();
-        return;
-    }
-    
-    // Start next task
-    const nextTask = tasks[currentTaskIndex];
-    timeRemaining = nextTask.duration;
-    updateTimerDisplay();
-    updateCurrentTaskDisplay();
 }
 
 function skipCurrentTask() {
@@ -490,7 +481,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Camera validation buttons
     document.getElementById('cameraSuccessBtn').addEventListener('click', () => {
+        // Check if all tasks are completed
+        if (currentTaskIndex >= tasks.length) {
+            // All tasks completed!
+            alert('🎉 Congratulations! All tasks completed! The boulder has reached the top!');
+            resetToTaskEntry();
+            showPage('timerPage');
+            return;
+        }
+        
+        // Validation passed, return to timer and start next task
         showPage('timerPage');
+        
+        if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+            const nextTask = tasks[currentTaskIndex];
+            timeRemaining = nextTask.duration;
+            updateTimerDisplay();
+            updateCurrentTaskDisplay();
+            startTimer();
+        }
     });
 
     document.getElementById('cameraFailBtn').addEventListener('click', () => {
