@@ -3,6 +3,7 @@ let timerInterval = null;
 let timeRemaining = 300; // 5 minutes in seconds
 let tasks = [];
 let isPaused = false;
+let questionnaireCompleted = false; // Track if questionnaire has been completed
 
 // Questionnaire state
 let currentSectionIndex = 0;
@@ -310,6 +311,13 @@ function restart() {
     tasks = [];
     resetTimer();
     renderTasks();
+
+    // Skip questionnaire if already completed, go directly to timer
+    if (questionnaireCompleted) {
+        showPage('timerPage');
+    } else {
+        showPage('questionnairePage');
+    }
     currentSectionIndex = 0;
     formResponses = {};
     
@@ -337,6 +345,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionnaireForm = document.getElementById('questionnaireForm');
     questionnaireForm.addEventListener('submit', (e) => {
         e.preventDefault();
+        const name = document.getElementById('name').value;
+        console.log('User started journey:', name);
+        questionnaireCompleted = true; // Mark questionnaire as completed
+        showPage('timerPage');
         if (validateCurrentSection()) {
             saveCurrentSection();
             console.log('User completed the descent into madness:', formResponses);
