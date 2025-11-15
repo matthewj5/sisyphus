@@ -34,7 +34,7 @@ app.get('/api/status', (req, res) => {
 app.post('/api/validate-task', async (req, res) => {
   try {
     const { image, taskDescription } = req.body;
-
+    console.log('Received task validation request1');
     if (!image || !taskDescription) {
       return res.status(400).json({
         success: false,

@@ -36,6 +36,194 @@ function skipQuestionnaire() {
     }, 2000);
 }
 
+// Camera functions (must be in global scope for showPage to access)
+async function startCamera() {
+    try {
+        const video = document.getElementById('cameraVideo');
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+            audio: false
+        });
+        video.srcObject = cameraStream;
+
+        // Update task info
+        if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+            const currentTask = tasks[currentTaskIndex];
+            document.getElementById('cameraTaskInfo').textContent =
+                `Prove you're working on: "${currentTask.text}"`;
+        }
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+        alert('Unable to access camera. Please ensure camera permissions are granted.');
+        goToHell('Camera access denied. You must enable camera to continue.');
+    }
+}
+
+function stopCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+}
+
+function capturePhoto() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    const context = canvas.getContext('2d');
+
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Draw current video frame to canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Get image data as base64
+    capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
+
+    // Show preview
+    const preview = document.getElementById('capturedImagePreview');
+    preview.innerHTML = `<img src="${capturedImageData}" alt="Captured photo">`;
+    preview.classList.remove('hidden');
+
+    // Hide video, show preview
+    video.style.display = 'none';
+
+    // Update buttons
+    document.getElementById('capturePhotoBtn').classList.add('hidden');
+    document.getElementById('retakePhotoBtn').classList.remove('hidden');
+
+    // Stop camera stream
+    stopCamera();
+
+    // Automatically validate
+    validateWithClaude();
+}
+
+function retakePhoto() {
+    // Reset UI
+    document.getElementById('cameraVideo').style.display = 'block';
+    document.getElementById('capturedImagePreview').classList.add('hidden');
+    document.getElementById('capturePhotoBtn').classList.remove('hidden');
+    document.getElementById('retakePhotoBtn').classList.add('hidden');
+    document.getElementById('validationStatus').classList.add('hidden');
+    document.getElementById('validationResult').classList.add('hidden');
+
+    capturedImageData = null;
+
+    // Restart camera
+    startCamera();
+}
+
+async function validateWithClaude() {
+    const statusDiv = document.getElementById('validationStatus');
+    const resultDiv = document.getElementById('validationResult');
+    
+    // Show status
+    statusDiv.classList.remove('hidden');
+    resultDiv.classList.add('hidden');
+
+    try {
+        // Get current task description
+        const currentTask = tasks[currentTaskIndex];
+        const taskDescription = currentTask ? currentTask.text : 'the assigned task';
+
+        // Send to backend API
+        const response = await fetch('/api/validate-task', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                image: capturedImageData,
+                taskDescription: taskDescription
+            })
+        });
+
+        const result = await response.json();
+
+        // Hide loading
+        hideLoadingScreen();
+        statusDiv.classList.add('hidden');
+
+        // Show result
+        resultDiv.classList.remove('hidden');
+
+        if (result.success) {
+            resultDiv.className = 'validation-result success';
+            resultDiv.innerHTML = `
+                <p><strong>✅ Task Validated!</strong></p>
+                <p>${result.explanation}</p>
+                <p><em>Continuing to next task...</em></p>
+            `;
+
+            // Wait 2 seconds then continue to next task
+            setTimeout(() => {
+                handleValidationSuccess();
+            }, 2000);
+        } else {
+            resultDiv.className = 'validation-result failure';
+            resultDiv.innerHTML = `
+                <p><strong>❌ Validation Failed!</strong></p>
+                <p>${result.explanation}</p>
+                <p><em>Sending you to hell...</em></p>
+            `;
+
+            // Wait 2 seconds then go to hell
+            setTimeout(() => {
+                handleValidationFailure(result.explanation);
+            }, 2000);
+        }
+    } catch (error) {
+        console.error('Validation error:', error);
+        hideLoadingScreen();
+        statusDiv.classList.add('hidden');
+        resultDiv.classList.remove('hidden');
+        resultDiv.className = 'validation-result failure';
+        resultDiv.innerHTML = `
+            <p><strong>❌ Error!</strong></p>
+            <p>Failed to validate with Claude API. Please try again.</p>
+        `;
+
+        // Allow retake
+        setTimeout(() => {
+            retakePhoto();
+        }, 2000);
+    }
+}
+
+function handleValidationSuccess() {
+    stopCamera();
+
+    // Check if all tasks are completed
+    if (currentTaskIndex >= tasks.length) {
+        // All tasks completed!
+        setTimeout(() => {
+            hideLoadingScreen();
+            alert('🎉 Congratulations! All tasks completed! The boulder has reached the top!');
+            resetToTaskEntry();
+            showPage('timerPage');
+        }, 2000);
+        return;
+    }
+
+    // Validation passed, return to timer and start next task
+    showPage('timerPage');
+
+    if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
+        const nextTask = tasks[currentTaskIndex];
+        timeRemaining = nextTask.duration;
+        updateTimerDisplay();
+        updateCurrentTaskDisplay();
+        startTimer();
+    }
+}
+
+function handleValidationFailure(reason) {
+    stopCamera();
+    goToHell(`Camera validation failed! ${reason}`);
+}
+
 // Page navigation
 function showPage(pageId) {
     const pages = document.querySelectorAll('.page');
@@ -537,194 +725,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('goToCameraBtn').addEventListener('click', () => {
         showPage('cameraPage');
     });
-
-    // Camera functionality
-    async function startCamera() {
-        try {
-            const video = document.getElementById('cameraVideo');
-            cameraStream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'user' },
-                audio: false
-            });
-            video.srcObject = cameraStream;
-
-            // Update task info
-            if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
-                const currentTask = tasks[currentTaskIndex];
-                document.getElementById('cameraTaskInfo').textContent =
-                    `Prove you're working on: "${currentTask.text}"`;
-            }
-        } catch (error) {
-            console.error('Error accessing camera:', error);
-            alert('Unable to access camera. Please ensure camera permissions are granted.');
-            goToHell('Camera access denied. You must enable camera to continue.');
-        }
-    }
-
-    function stopCamera() {
-        if (cameraStream) {
-            cameraStream.getTracks().forEach(track => track.stop());
-            cameraStream = null;
-        }
-    }
-
-    function capturePhoto() {
-        const video = document.getElementById('cameraVideo');
-        const canvas = document.getElementById('cameraCanvas');
-        const context = canvas.getContext('2d');
-
-        // Set canvas dimensions to match video
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        // Draw current video frame to canvas
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        // Get image data as base64
-        capturedImageData = canvas.toDataURL('image/jpeg', 0.8);
-
-        // Show preview
-        const preview = document.getElementById('capturedImagePreview');
-        preview.innerHTML = `<img src="${capturedImageData}" alt="Captured photo">`;
-        preview.classList.remove('hidden');
-
-        // Hide video, show preview
-        video.style.display = 'none';
-
-        // Update buttons
-        document.getElementById('capturePhotoBtn').classList.add('hidden');
-        document.getElementById('retakePhotoBtn').classList.remove('hidden');
-
-        // Stop camera stream
-        stopCamera();
-
-        // Automatically validate
-        validateWithClaude();
-    }
-
-    function retakePhoto() {
-        // Reset UI
-        document.getElementById('cameraVideo').style.display = 'block';
-        document.getElementById('capturedImagePreview').classList.add('hidden');
-        document.getElementById('capturePhotoBtn').classList.remove('hidden');
-        document.getElementById('retakePhotoBtn').classList.add('hidden');
-        document.getElementById('validationStatus').classList.add('hidden');
-        document.getElementById('validationResult').classList.add('hidden');
-
-        capturedImageData = null;
-
-        // Restart camera
-        startCamera();
-    }
-
-    async function validateWithClaude() {
-        const statusDiv = document.getElementById('validationStatus');
-        const resultDiv = document.getElementById('validationResult');
-        
-        // Show status
-        statusDiv.classList.remove('hidden');
-        resultDiv.classList.add('hidden');
-
-        try {
-            // Get current task description
-            const currentTask = tasks[currentTaskIndex];
-            const taskDescription = currentTask ? currentTask.text : 'the assigned task';
-
-            // Send to backend API
-            const response = await fetch('/api/validate-task', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    image: capturedImageData,
-                    taskDescription: taskDescription
-                })
-            });
-
-            const result = await response.json();
-
-            // Hide loading
-            hideLoadingScreen();
-            statusDiv.classList.add('hidden');
-
-            // Show result
-            resultDiv.classList.remove('hidden');
-
-            if (result.success) {
-                resultDiv.className = 'validation-result success';
-                resultDiv.innerHTML = `
-                    <p><strong>✅ Task Validated!</strong></p>
-                    <p>${result.explanation}</p>
-                    <p><em>Continuing to next task...</em></p>
-                `;
-
-                // Wait 2 seconds then continue to next task
-                setTimeout(() => {
-                    handleValidationSuccess();
-                }, 2000);
-            } else {
-                resultDiv.className = 'validation-result failure';
-                resultDiv.innerHTML = `
-                    <p><strong>❌ Validation Failed!</strong></p>
-                    <p>${result.explanation}</p>
-                    <p><em>Sending you to hell...</em></p>
-                `;
-
-                // Wait 2 seconds then go to hell
-                setTimeout(() => {
-                    handleValidationFailure(result.explanation);
-                }, 2000);
-            }
-        } catch (error) {
-            console.error('Validation error:', error);
-            hideLoadingScreen();
-            statusDiv.classList.add('hidden');
-            resultDiv.classList.remove('hidden');
-            resultDiv.className = 'validation-result failure';
-            resultDiv.innerHTML = `
-                <p><strong>❌ Error!</strong></p>
-                <p>Failed to validate with Claude API. Please try again.</p>
-            `;
-
-            // Allow retake
-            setTimeout(() => {
-                retakePhoto();
-            }, 2000);
-        }
-    }
-
-    function handleValidationSuccess() {
-        stopCamera();
-
-        // Check if all tasks are completed
-        if (currentTaskIndex >= tasks.length) {
-            // All tasks completed!
-            setTimeout(() => {
-                hideLoadingScreen();
-                alert('🎉 Congratulations! All tasks completed! The boulder has reached the top!');
-                resetToTaskEntry();
-                showPage('timerPage');
-            }, 2000);
-            return;
-        }
-
-        // Validation passed, return to timer and start next task
-        showPage('timerPage');
-
-        if (currentTaskIndex >= 0 && currentTaskIndex < tasks.length) {
-            const nextTask = tasks[currentTaskIndex];
-            timeRemaining = nextTask.duration;
-            updateTimerDisplay();
-            updateCurrentTaskDisplay();
-            startTimer();
-        }
-    }
-
-    function handleValidationFailure(reason) {
-        stopCamera();
-        goToHell(`Camera validation failed! ${reason}`);
-    }
 
     // Capture photo button
     document.getElementById('capturePhotoBtn').addEventListener('click', capturePhoto);
