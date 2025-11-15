@@ -57,15 +57,15 @@ app.post('/api/validate-task', async (req, res) => {
         text: `You are a task validator for a productivity app called Sisyphus.
 The user is supposed to be working on the following task: "${taskDescription}"
 
-The user has submitted ${images.length} image(s) for validation. Analyze ALL the images provided and determine if the person appears to be making a genuine attempt to work on this task.
+The user has submitted ${images.length} image(s) for validation. Analyze the images to determine if the person appears to be working on or has completed this task.
 
-Guidelines (less strict):
-- Look for reasonable signs of engagement with the task (open laptop with relevant content, materials/tools for the task visible, user in a working position, etc.)
-- Normal human behavior such as smiling, looking relaxed, glancing away, or having a casual posture is allowed and does NOT mean they fail.
-- Only fail the task if the person is clearly doing something unrelated (social media, entertainment videos, unrelated activities) OR if there is no visible evidence they are engaged with the task.
-- If the environment suggests they are in a work context and making an honest attempt, they PASS.
-- Consider evidence across ALL images when making your decision.
-
+Guidelines (standard strictness):
+- Look for reasonable evidence of task engagement (relevant materials, work environment, tools/devices being used for the task)
+- The person doesn't need to be perfectly focused - normal behavior like taking breaks, looking away, or relaxed posture is fine
+- PASS if you can see indicators that suggest they're working on the task, even if not perfectly captured
+- FAIL if the images clearly show unrelated activities (gaming, watching entertainment, socializing unrelated to task) or no connection to the task
+- If multiple images are provided, consider them together - even one image showing task work is enough to PASS
+- Give benefit of the doubt for ambiguous cases where work could reasonably be happening off-camera or between shots
 
 Respond in JSON format with:
 {
