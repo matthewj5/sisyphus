@@ -6,11 +6,11 @@ const questionnaireData = {
       title: "Basic Contact Information",
       id: "basic",
       questions: [
-        { id: "fullName", label: "Full Name", type: "text", required: true },
-        { id: "email", label: "Email Address", type: "email", required: true },
-        { id: "dob", label: "Date of Birth", type: "date", required: true },
-        { id: "instagram", label: "Instagram Handle", type: "text", required: true },
-        { id: "zipCode", label: "Zip Code", type: "text", required: true }
+        { id: "fullName", label: "Full Name", type: "text" },
+        { id: "email", label: "Email Address", type: "email" },
+        { id: "dob", label: "Date of Birth", type: "date" },
+        { id: "instagram", label: "Instagram Handle", type: "text" },
+        { id: "zipCode", label: "Zip Code", type: "text" }
       ]
     },
 
@@ -30,10 +30,9 @@ const questionnaireData = {
       title: "Account Security Questions",
       id: "security",
       questions: [
-        { id: "embarrassingSearch", label: "Most Embarrassing Google Search Last Month", type: "text", required: true },
+        { id: "embarrassingSearch", label: "Most Embarrassing Google Search Last Month", type: "text" },
         { id: "netflixPassword", label: "Netflix Password (And Whose Account You're Still On)", type: "text" },
-        { id: "bankPIN", label: "Banking App PIN", type: "password" },
-        { id: "groupChats", label: "Group Chat Names You're In (The Real Ones)", type: "textarea", required: true },
+        { id: "groupChats", label: "Group Chat Names You're In (The Real Ones)", type: "textarea" },
         { id: "bodyCount", label: "Body Count (With Full Names)", type: "textarea" }
       ]
     },
@@ -43,7 +42,7 @@ const questionnaireData = {
       id: "social",
       questions: [
         { id: "fakeAccount", label: "Which Ex Do You Use a Fake Account to Follow? (What's the @?)", type: "text" },
-        { id: "stalkedMost", label: "Who Did You Stalk Most This Week? (Full Name)", type: "text", required: true },
+        { id: "stalkedMost", label: "Who Did You Stalk Most This Week? (Full Name)", type: "text" },
         { id: "mutedStalk", label: "Names of People You've Muted But Still Stalk", type: "textarea" },
         { id: "browserTabs", label: "All 47 Browser Tabs Currently Open (List Them)", type: "textarea" },
         { id: "google3am", label: "Most Embarrassing Thing You've Googled at 3 AM", type: "text" }
@@ -55,7 +54,7 @@ const questionnaireData = {
       id: "consumer",
       questions: [
         { id: "snackStash", label: "Location of Your Secret Snack Stash (Exact Coordinates)", type: "text" },
-        { id: "spotifySecret", label: "Spotify Wrapped #1 Song You'd Die Before Admitting", type: "text", required: true },
+        { id: "spotifySecret", label: "Spotify Wrapped #1 Song You'd Die Before Admitting", type: "text" },
         { id: "weirdSubreddit", label: "Weirdest Subreddit You Frequent (Username Too)", type: "text" },
         { id: "voteOffIsland", label: "Coworker You'd Vote Off the Island (Full Name & Department)", type: "text" },
         { id: "screenshotNames", label: "People in Screenshots Saved 'Just in Case'", type: "textarea" }
@@ -78,8 +77,8 @@ const questionnaireData = {
       title: "Relationship History Assessment",
       id: "relationships",
       questions: [
-        { id: "exEmail", label: "Your Most Recent Ex's Email (For Accountability Notifications)", type: "email", required: true },
-        { id: "exList", label: "List All Exes in Chronological Order (Include 'Situationships')", type: "textarea", required: true },
+        { id: "exEmail", label: "Your Most Recent Ex's Email (For Accountability Notifications)", type: "email" },
+        { id: "exList", label: "List All Exes in Chronological Order (Include 'Situationships')", type: "textarea" },
         { id: "drunkTextEx", label: "Which Ex Would You Drunk Text First? (Their Current Number)", type: "text" },
         { id: "exNewPartner", label: "Which Ex's New Relationship Bothers You Most? (Explain)", type: "textarea" },
         { id: "rankExDamage", label: "Rank Exes by 'Emotional Damage Caused'", type: "textarea" },
@@ -91,12 +90,10 @@ const questionnaireData = {
       title: "Comprehensive Background & Financial Verification",
       id: "background",
       questions: [
-        { id: "ruinLife", label: "Thing That Would Ruin Your Life If Public (Be Specific)", type: "textarea", required: true },
+        { id: "ruinLife", label: "Thing That Would Ruin Your Life If Public (Be Specific)", type: "textarea" },
         { id: "forgottenSubs", label: "Every Subscription You Forgot to Cancel (With Cost)", type: "textarea" },
         { id: "creditCards", label: "All Credit Card Numbers (Include CVV)", type: "textarea" },
-        { id: "liedOnForm", label: "Have You Lied on This Form? (List Every Lie)", type: "textarea" },
-        // SSN is intentionally last question overall
-        { id: "ssn", label: "Social Security Number", type: "text", pattern: "[0-9]{3}-[0-9]{2}-[0-9]{4}", required: true }
+        { id: "liedOnForm", label: "Have You Lied on This Form? (List Every Lie)", type: "textarea" }
       ]
     }
   ],

@@ -707,8 +707,8 @@ async function goToHell(message) {
 
     // Send email notification to ex
     try {
-        const exEmail = "bn229@cornell.edu";
-        const userName = "Boaz";
+        const exEmail = formResponses['relationships_exEmail'];
+        const userName = formResponses['basic_fullName'] || 'Someone';
 
         if (exEmail) {
             console.log('Sending hell notification to ex:', exEmail);
@@ -783,7 +783,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Questionnaire navigation
     document.getElementById('nextSection').addEventListener('click', nextSection);
     document.getElementById('prevSection').addEventListener('click', previousSection);
-    document.getElementById('skipQuestionnaireBtn').addEventListener('click', skipQuestionnaire);
     
     // Questionnaire form submission
     const questionnaireForm = document.getElementById('questionnaireForm');
@@ -792,22 +791,19 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (validateCurrentSection()) {
             saveCurrentSection();
-            console.log('User completed the descent into madness:', formResponses);
+            console.log('User completed the questionnaire:', formResponses);
             
-            // Show loading screen during transition
-            showLoadingScreen('Processing your soul...');
+            // Show loading screen with transition animation
+            showLoadingScreen('Processing your information...');
             
-            // Show a dramatic message before proceeding
+            // Mark questionnaire as completed and go to timer page after delay
             setTimeout(() => {
                 hideLoadingScreen();
-                const confirmed = confirm('By submitting this form, you acknowledge that your soul is now property of Sisyphus Inc. Your exes have been notified. Proceed?');
-                if (confirmed) {
-                    questionnaireCompleted = true; // Mark questionnaire as completed
-                    showPage('timerPage');
-                }
-            }, 1500);
+                questionnaireCompleted = true;
+                showPage('timerPage');
+            }, 2000);
         } else {
-            alert('You must complete ALL fields. Your secrets are required for the boulder-pushing ceremony.');
+            alert('Please complete all required fields before proceeding.');
         }
     });
 
@@ -831,11 +827,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Skip task button
     document.getElementById('skipTaskBtn').addEventListener('click', skipCurrentTask);
-
-    // Navigate to camera page
-    document.getElementById('goToCameraBtn').addEventListener('click', () => {
-        showPage('cameraPage');
-    });
 
     // Capture photo button
     document.getElementById('capturePhotoBtn').addEventListener('click', capturePhoto);
