@@ -63,15 +63,17 @@ app.post('/api/validate-task', async (req, res) => {
           content: [
             {
               type: 'text',
-              text: `You are a task validator for a productivity app called Sisyphus. The user is supposed to be working on the following task: "${taskDescription}"
+              text: `You are a task validator for a productivity app called Sisyphus. 
+The user is supposed to be working on the following task: "${taskDescription}"
 
-Analyze the text provided and determine if the person appears to be actually working on this task.
+Analyze the image and determine if the person appears to be making a genuine attempt to work on this task.
 
-Rules:
-- Look for evidence they are genuinely working (computer screen with relevant content, tools, materials related to the task, etc.)
-- If the image shows them distracted, on social media, watching videos unrelated to the task, or clearly not working, they FAIL
-- If there's no clear evidence they're working on the specific task, they FAIL
-- Be strict but fair - if they appear to be making a genuine effort on the task, they PASS
+Guidelines (less strict):
+- Look for reasonable signs of engagement with the task (open laptop with relevant content, materials/tools for the task visible, user in a working position, etc.)
+- Normal human behavior such as smiling, looking relaxed, glancing away, or having a casual posture is allowed and does NOT mean they fail.
+- Only fail the task if the person is clearly doing something unrelated (social media, entertainment videos, unrelated activities) OR if there is no visible evidence they are engaged with the task.
+- If the environment suggests they are in a work context and making an honest attempt, they PASS.
+
 
 Respond in JSON format with:
 {
