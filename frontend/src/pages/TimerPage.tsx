@@ -139,7 +139,7 @@ export function TimerPage() {
               <input
                 id="taskDuration"
                 type="text"
-                className="form-input w-32"
+                className="form-input w-24"
                 placeholder="MM:SS"
                 maxLength={5}
                 value={taskDuration}

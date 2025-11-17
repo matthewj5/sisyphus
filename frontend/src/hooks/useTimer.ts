@@ -91,6 +91,19 @@ export function useTimer() {
     setTimerInterval(null);
   };
 
+  const restartWithSameTasks = () => {
+    // Reset all tasks to not completed
+    const resetTasks = timer.tasks.map(task => ({ ...task, completed: false }));
+    setTasks(resetTasks);
+    setCurrentTaskIndex(0);
+    setTimeRemaining(0);
+    setTimerStarted(false);
+    if (timer.timerInterval) {
+      clearInterval(timer.timerInterval);
+    }
+    setTimerInterval(null);
+  };
+
   return {
     tasks: timer.tasks,
     currentTaskIndex: timer.currentTaskIndex,
@@ -103,5 +116,6 @@ export function useTimer() {
     skipCurrentTask,
     completeCurrentTask,
     resetTimer,
+    restartWithSameTasks,
   };
 }

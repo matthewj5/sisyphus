@@ -11,7 +11,7 @@ interface HellPageProps {
 
 export function HellPage({ reason = 'Failed task validation' }: HellPageProps) {
   const { setCurrentPage, questionnaire } = useAppContext();
-  const { resetTimer } = useTimer();
+  const { restartWithSameTasks } = useTimer();
   const [emailSent, setEmailSent] = useState(false);
   const [sending, setSending] = useState(false);
 
@@ -43,7 +43,7 @@ export function HellPage({ reason = 'Failed task validation' }: HellPageProps) {
   }, []);
 
   const handleRestart = () => {
-    resetTimer();
+    restartWithSameTasks();
     setCurrentPage('timer');
   };
 
