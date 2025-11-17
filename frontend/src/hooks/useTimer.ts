@@ -1,73 +1,32 @@
-import { useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
+import { useTimerInterval } from './useTimerInterval';
+import { useTaskLifecycle } from './useTaskLifecycle';
 
+/**
+ * Main timer hook that composes focused hooks for timer and task management
+ */
 export function useTimer() {
+  const { timer, setTasks, addTask, setCurrentPage } = useAppContext();
+
+  // Task lifecycle management (completion, progression, cleanup)
   const {
-    timer,
-    setTasks,
-    addTask,
-    setCurrentTaskIndex,
-    setTimeRemaining,
-    setTimerStarted,
-    setTimerInterval,
-    setCurrentPage,
-  } = useAppContext();
+    startAllTasks,
+    skipCurrentTask,
+    removeCompletedTask,
+    resetTimer,
+    restartWithSameTasks,
+    removeLastCompletedTask,
+    markCurrentTaskCompleted,
+  } = useTaskLifecycle();
 
-  // Timer interval effect
-  useEffect(() => {
-    if (!timer.timerStarted || timer.timeRemaining <= 0) {
-      return;
-    }
-
-    const interval = window.setInterval(() => {
-      setTimeRemaining(timer.timeRemaining - 1);
-
-      // When time runs out, go to camera page
-      if (timer.timeRemaining - 1 <= 0) {
-        setTimerStarted(false);
-        setCurrentPage('camera');
-      }
-    }, 1000);
-
-    setTimerInterval(interval);
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [timer.timerStarted, timer.timeRemaining]);
-
-  const startAllTasks = () => {
-    if (timer.tasks.length === 0) return;
-
-    setCurrentTaskIndex(0);
-    setTimeRemaining(timer.tasks[0].duration);
-    setTimerStarted(true);
-  };
-
-  const skipCurrentTask = () => {
-    const currentTask = timer.tasks[timer.currentTaskIndex];
-    if (!currentTask) return;
-
-    // Mark current task as completed
-    const updatedTasks = timer.tasks.map((task, index) =>
-      index === timer.currentTaskIndex ? { ...task, completed: true } : task
-    );
-    setTasks(updatedTasks);
-
-    // Move to next task or camera page
-    if (timer.currentTaskIndex < timer.tasks.length - 1) {
-      const nextIndex = timer.currentTaskIndex + 1;
-      setCurrentTaskIndex(nextIndex);
-      setTimeRemaining(timer.tasks[nextIndex].duration);
-      setTimerStarted(true);
-    } else {
-      // All tasks done, go to camera
-      setTimerStarted(false);
-      setCurrentPage('camera');
-    }
-  };
+  // Timer interval countdown effect
+  useTimerInterval(
+    () => {
+      const updatedTasks = markCurrentTaskCompleted();
+      setTasks(updatedTasks);
+    },
+    () => setCurrentPage('camera')
+  );
 
   const completeCurrentTask = () => {
     skipCurrentTask(); // Same logic
@@ -78,30 +37,6 @@ export function useTimer() {
 
     const updatedTasks = timer.tasks.filter((task) => task.id !== taskId);
     setTasks(updatedTasks);
-  };
-
-  const resetTimer = () => {
-    setTasks([]);
-    setCurrentTaskIndex(0);
-    setTimeRemaining(0);
-    setTimerStarted(false);
-    if (timer.timerInterval) {
-      clearInterval(timer.timerInterval);
-    }
-    setTimerInterval(null);
-  };
-
-  const restartWithSameTasks = () => {
-    // Reset all tasks to not completed
-    const resetTasks = timer.tasks.map(task => ({ ...task, completed: false }));
-    setTasks(resetTasks);
-    setCurrentTaskIndex(0);
-    setTimeRemaining(0);
-    setTimerStarted(false);
-    if (timer.timerInterval) {
-      clearInterval(timer.timerInterval);
-    }
-    setTimerInterval(null);
   };
 
   return {
@@ -115,7 +50,9 @@ export function useTimer() {
     startAllTasks,
     skipCurrentTask,
     completeCurrentTask,
+    removeCompletedTask,
     resetTimer,
     restartWithSameTasks,
+    removeLastCompletedTask,
   };
 }

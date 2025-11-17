@@ -57,6 +57,9 @@ export function TimerPage() {
 
   const isWarning = timeRemaining <= 30 && timerStarted;
 
+  // Filter out completed tasks (they're being verified and will be removed soon)
+  const incompleteTasks = tasks.filter(task => !task.completed);
+
   return (
     <div className="min-h-screen bg-earth-light-sand p-4">
       <div className="max-w-4xl mx-auto">
@@ -84,32 +87,32 @@ export function TimerPage() {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-xl font-semibold text-earth-dark-brown mb-4">Task Queue</h3>
 
-          {tasks.length === 0 ? (
+          {incompleteTasks.length === 0 ? (
             <p className="text-center text-earth-brown py-8">
               Add tasks to begin your journey
             </p>
           ) : (
             <ul className="space-y-2">
-              {tasks.map((task, index) => (
-                <li
-                  key={task.id}
-                  className={`flex items-center justify-between p-3 rounded ${
-                    index === currentTaskIndex && timerStarted
-                      ? 'bg-earth-muted-green text-white'
-                      : task.completed
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-earth-light-sand'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-sm">
-                      {task.completed ? '✓' : index === currentTaskIndex && timerStarted ? '▶' : index + 1}
-                    </span>
+              {incompleteTasks.map((task, index) => {
+                const isCurrentTask = currentTask?.id === task.id && timerStarted;
+                return (
+                  <li
+                    key={task.id}
+                    className={`flex items-center justify-between p-3 rounded ${
+                      isCurrentTask
+                        ? 'bg-earth-muted-green text-white'
+                        : 'bg-earth-light-sand text-earth-dark-brown'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm">
+                        {isCurrentTask ? '▶' : index + 1}
+                      </span>
                     <span className="font-medium">{task.text}</span>
                     <span className="text-sm opacity-75">({formatTime(task.duration)})</span>
                   </div>
 
-                  {!timerStarted && !task.completed && (
+                  {!timerStarted && (
                     <button
                       onClick={() => deleteTask(task.id)}
                       className="btn-delete"
@@ -118,7 +121,8 @@ export function TimerPage() {
                     </button>
                   )}
                 </li>
-              ))}
+              );
+              })}
             </ul>
           )}
         </div>
@@ -151,7 +155,7 @@ export function TimerPage() {
               </Button>
             </div>
 
-            {tasks.length > 0 && (
+            {incompleteTasks.length > 0 && (
               <Button variant="danger" onClick={startAllTasks} className="w-full">
                 Start Working!
               </Button>

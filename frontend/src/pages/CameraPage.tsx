@@ -9,7 +9,7 @@ import { validateTask } from '../services/api';
 export function CameraPage() {
   const { videoRef, cameraStream, startCamera, stopCamera } = useCamera();
   const { capturedImages, capturePhoto, handleFileUpload, removeCapturedImage, clearCapturedImages } = useImageCapture();
-  const { currentTask } = useTimer();
+  const { currentTask, removeCompletedTask } = useTimer();
   const { setCurrentPage } = useAppContext();
 
   const [validating, setValidating] = useState(false);
@@ -43,11 +43,12 @@ export function CameraPage() {
       const result = await validateTask(images, currentTask.text);
 
       if (result.success) {
-        // Success! Move to next task or finish
+        // Success! Remove completed task and move to next
         setValidationMessage(`✅ ${result.explanation}`);
         clearCapturedImages();
 
         setTimeout(() => {
+          removeCompletedTask();
           setCurrentPage('timer');
         }, 2000);
       } else {

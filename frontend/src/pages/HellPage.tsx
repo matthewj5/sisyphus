@@ -11,7 +11,7 @@ interface HellPageProps {
 
 export function HellPage({ reason = 'Failed task validation' }: HellPageProps) {
   const { setCurrentPage, questionnaire } = useAppContext();
-  const { restartWithSameTasks } = useTimer();
+  const { restartWithSameTasks, removeLastCompletedTask } = useTimer();
   const [emailSent, setEmailSent] = useState(false);
   const [sending, setSending] = useState(false);
 
@@ -42,8 +42,13 @@ export function HellPage({ reason = 'Failed task validation' }: HellPageProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleRestart = () => {
+  const handleTryAgain = () => {
     restartWithSameTasks();
+    setCurrentPage('timer');
+  };
+
+  const handleAbandonTask = () => {
+    removeLastCompletedTask();
     setCurrentPage('timer');
   };
 
@@ -92,14 +97,22 @@ export function HellPage({ reason = 'Failed task validation' }: HellPageProps) {
           <p>"One must imagine Sisyphus happy."</p>
           <p className="text-sm mt-2 text-red-400">- Albert Camus</p>
           <p className="text-xs mt-4 text-red-500">
-            (But seriously, try again. The boulder never stops rolling.)
+            (But seriously, what will you do now?)
           </p>
         </div>
 
-        {/* Restart Button */}
-        <Button variant="danger" onClick={handleRestart} className="text-xl px-8 py-4">
-          Push the Boulder Again
-        </Button>
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button variant="danger" onClick={handleTryAgain} className="text-xl px-8 py-4">
+            🪨 Try Again
+          </Button>
+          <Button variant="secondary" onClick={handleAbandonTask} className="text-xl px-8 py-4">
+            🗑️ Abandon Task
+          </Button>
+        </div>
+        <p className="text-sm text-red-400 mt-4">
+          Try again to retry the failed task, or abandon it to move on
+        </p>
       </div>
     </div>
   );
