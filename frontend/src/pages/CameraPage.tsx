@@ -11,11 +11,20 @@ import { handleError } from '../utils/errorHandling';
 export function CameraPage() {
   const { videoRef, cameraStream, startCamera, stopCamera } = useCamera();
   const { capturedImages, capturePhoto, handleFileUpload, removeCapturedImage, clearCapturedImages } = useImageCapture();
-  const { currentTask, removeCompletedTask } = useTimer();
+  const { currentTask, removeCompletedTask, tasks, currentTaskIndex } = useTimer();
   const { setCurrentPage } = useAppContext();
 
   const [validating, setValidating] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
+
+  // Debug logging
+  useEffect(() => {
+    console.log('=== CameraPage Debug ===');
+    console.log('tasks:', tasks);
+    console.log('currentTaskIndex:', currentTaskIndex);
+    console.log('currentTask:', currentTask);
+    console.log('=======================');
+  }, [tasks, currentTaskIndex, currentTask]);
 
   const getValidationStatus = (): 'success' | 'error' | 'loading' => {
     if (validationMessage.includes('✅')) return 'success';
@@ -39,7 +48,7 @@ export function CameraPage() {
     }
 
     if (!currentTask) {
-      alert('No task found');
+      alert(`No task found!\nDebug info:\n- Tasks: ${tasks.length}\n- CurrentIndex: ${currentTaskIndex}\n- Tasks array: ${JSON.stringify(tasks.map(t => ({text: t.text, completed: t.completed})))}`);
       return;
     }
 

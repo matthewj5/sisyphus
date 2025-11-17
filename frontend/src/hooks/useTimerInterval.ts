@@ -47,9 +47,14 @@ export function useTimerInterval(
 
         // When time runs out, mark as completed and go to camera page
         if (newTime <= 0) {
+          console.log('=== Timer Expired ===');
+          console.log('Calling markTaskCompleted...');
           markTaskCompletedRef.current();
+          console.log('Setting timerStarted to false...');
           setTimerStarted(false);
+          console.log('Navigating to camera...');
           navigateToCameraRef.current();
+          console.log('====================');
           return 0;
         }
 

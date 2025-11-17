@@ -33,9 +33,15 @@ export function useTaskLifecycle() {
 
   // Utility: Mark current task as completed
   const markCurrentTaskCompleted = (): Task[] => {
-    return timer.tasks.map((task, index) =>
+    console.log('=== markCurrentTaskCompleted ===');
+    console.log('timer.tasks:', timer.tasks);
+    console.log('timer.currentTaskIndex:', timer.currentTaskIndex);
+    const result = timer.tasks.map((task, index) =>
       index === timer.currentTaskIndex ? { ...task, completed: true } : task
     );
+    console.log('marked tasks:', result);
+    console.log('================================');
+    return result;
   };
 
   // Find the next incomplete task after the current index
