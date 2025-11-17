@@ -29,11 +29,8 @@ export function useTimerInterval(
   }, [markTaskCompleted, navigateToCamera]);
 
   useEffect(() => {
-    console.log('useTimerInterval effect running. timerStarted:', timer.timerStarted);
-
     // Always cleanup previous interval when timer stops
     if (!timer.timerStarted) {
-      console.log('Timer not started, cleaning up...');
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         setTimerInterval(null);
@@ -42,26 +39,17 @@ export function useTimerInterval(
       return;
     }
 
-    console.log('Starting new interval...');
     // Start new interval
     const interval = window.setInterval(() => {
-      console.log('>>> INTERVAL CALLBACK FIRED <<<');
       // Use functional update to avoid stale closure
       setTimeRemaining((prevTime) => {
-        console.log('Interval tick. prevTime:', prevTime, 'type:', typeof prevTime);
         const newTime = prevTime - 1;
-        console.log('newTime:', newTime);
 
         // When time runs out, mark as completed and go to camera page
         if (newTime <= 0) {
-          console.log('=== Timer Expired ===');
-          console.log('Calling markTaskCompleted...');
           markTaskCompletedRef.current();
-          console.log('Setting timerStarted to false...');
           setTimerStarted(false);
-          console.log('Navigating to camera...');
           navigateToCameraRef.current();
-          console.log('====================');
           return 0;
         }
 
@@ -71,7 +59,6 @@ export function useTimerInterval(
 
     intervalRef.current = interval;
     setTimerInterval(interval);
-    console.log('Interval created with ID:', interval);
 
     return () => {
       if (interval) {

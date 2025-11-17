@@ -33,15 +33,9 @@ export function useTaskLifecycle() {
 
   // Utility: Mark current task as completed
   const markCurrentTaskCompleted = (): Task[] => {
-    console.log('=== markCurrentTaskCompleted ===');
-    console.log('timer.tasks:', timer.tasks);
-    console.log('timer.currentTaskIndex:', timer.currentTaskIndex);
-    const result = timer.tasks.map((task, index) =>
+    return timer.tasks.map((task, index) =>
       index === timer.currentTaskIndex ? { ...task, completed: true } : task
     );
-    console.log('marked tasks:', result);
-    console.log('================================');
-    return result;
   };
 
   // Find the next incomplete task after the current index
@@ -55,19 +49,9 @@ export function useTaskLifecycle() {
   const startAllTasks = () => {
     if (timer.tasks.length === 0) return;
 
-    console.log('=== startAllTasks ===');
-    console.log('tasks:', timer.tasks);
-    console.log('first task:', timer.tasks[0]);
-    console.log('first task duration:', timer.tasks[0].duration);
-    console.log('====================');
-
     setCurrentTaskIndex(0);
-    const duration = timer.tasks[0].duration;
-    console.log('About to call setTimeRemaining with:', duration, 'type:', typeof duration);
-    setTimeRemaining(duration);
-    console.log('Called setTimeRemaining');
+    setTimeRemaining(timer.tasks[0].duration);
     setTimerStarted(true);
-    console.log('Called setTimerStarted(true)');
   };
 
   // Skip current task and move to next, or go to camera if done

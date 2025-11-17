@@ -40,13 +40,6 @@ export function TimerPage() {
       completed: false,
     };
 
-    console.log('=== Adding Task ===');
-    console.log('taskName:', taskName);
-    console.log('taskDuration input:', taskDuration);
-    console.log('parsed seconds:', seconds);
-    console.log('newTask:', newTask);
-    console.log('==================');
-
     addTask(newTask);
     setTaskName('');
     setTaskDuration('');
