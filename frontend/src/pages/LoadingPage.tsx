@@ -52,7 +52,7 @@ export function LoadingPage() {
         <ellipse cx="320" cy="140" rx="15" ry="8" fill="#3a4350" opacity="0.3" />
 
         {/* Sisyphus */}
-        <g className="animate-sisyphus-walk">
+        <g className="animate-sisyphus-walk" style={{ transformOrigin: '120px 270px' }}>
           <ellipse cx="120" cy="270" rx="12" ry="18" fill="#d4a574" />
           <circle cx="120" cy="255" r="8" fill="#d4a574" />
           <line x1="120" y1="265" x2="135" y2="265" stroke="#d4a574" strokeWidth="3" strokeLinecap="round" />
@@ -61,7 +61,7 @@ export function LoadingPage() {
         </g>
 
         {/* Boulder */}
-        <g className="animate-boulder-roll">
+        <g className="animate-boulder-roll" style={{ transformOrigin: '150px 260px' }}>
           <circle cx="150" cy="260" r="20" fill="#6b7280" stroke="#4b5563" strokeWidth="2" />
           <circle cx="145" cy="255" r="3" fill="#9ca3af" opacity="0.5" />
           <circle cx="155" cy="265" r="2" fill="#9ca3af" opacity="0.5" />
