@@ -140,8 +140,8 @@ export function TimerPage() {
                 id="taskDuration"
                 type="text"
                 className="form-input w-24"
-                placeholder="MM:SS"
-                maxLength={5}
+                placeholder="M:SS"
+                maxLength={7}
                 value={taskDuration}
                 onChange={(e) => setTaskDuration(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e)}
