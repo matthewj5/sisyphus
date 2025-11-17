@@ -17,16 +17,16 @@ app.use(express.json({ limit: '50mb' })); // For parsing JSON bodies with base64
 // API routes
 app.use('/api', routes);
 
-// Serve static files from frontend/dist
+// Error handling middleware
+app.use(errorHandler);
+
+// Serve static files from frontend/dist (after error handler so API errors work)
 const frontendPath = path.join(__dirname, '../../frontend/dist');
 app.use(express.static(frontendPath));
 
-// Handle client-side routing - serve index.html for all non-API routes
-app.get('*', (_req, res) => {
+// Handle client-side routing - serve index.html for all remaining routes
+app.use((_req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
-
-// Error handling middleware (must be last)
-app.use(errorHandler);
 
 export default app;
