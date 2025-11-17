@@ -76,7 +76,11 @@ export function AppProvider({ children }: AppProviderProps) {
   const setTasks = (tasks: Task[]) => setTimer((prev) => ({ ...prev, tasks }));
   const addTask = (task: Task) => setTimer((prev) => ({ ...prev, tasks: [...prev.tasks, task] }));
   const setCurrentTaskIndex = (index: number) => setTimer((prev) => ({ ...prev, currentTaskIndex: index }));
-  const setTimeRemaining = (time: number) => setTimer((prev) => ({ ...prev, timeRemaining: time }));
+  const setTimeRemaining = (time: number | ((prev: number) => number)) =>
+    setTimer((prev) => ({
+      ...prev,
+      timeRemaining: typeof time === 'function' ? time(prev.timeRemaining) : time
+    }));
   const setTimerStarted = (started: boolean) => setTimer((prev) => ({ ...prev, timerStarted: started }));
   const setTimerInterval = (interval: number | null) => setTimer((prev) => ({ ...prev, timerInterval: interval }));
 
