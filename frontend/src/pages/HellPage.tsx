@@ -4,6 +4,7 @@ import { useTimer } from '../hooks/useTimer';
 import { Button } from '../components/common/Button';
 import { notifyHell } from '../services/api';
 import { getUserName, getExEmail } from '../utils/questionnaire';
+import { handleError } from '../utils/errorHandling';
 
 interface HellPageProps {
   reason?: string;
@@ -28,7 +29,10 @@ export function HellPage({ reason = 'Failed task validation' }: HellPageProps) {
         await notifyHell(exEmail, userName || 'Anonymous', reason);
         setEmailSent(true);
       } catch (error) {
-        console.error('Failed to send notification:', error);
+        handleError(error, {
+          action: 'hell_notification',
+          userMessage: 'Failed to send notification to your ex',
+        });
       } finally {
         setSending(false);
       }

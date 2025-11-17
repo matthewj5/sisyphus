@@ -4,7 +4,9 @@ import { useImageCapture } from '../hooks/useImageCapture';
 import { useTimer } from '../hooks/useTimer';
 import { useAppContext } from '../context/AppContext';
 import { Button } from '../components/common/Button';
+import { StatusMessage } from '../components/common/StatusMessage';
 import { validateTask } from '../services/api';
+import { handleError } from '../utils/errorHandling';
 
 export function CameraPage() {
   const { videoRef, cameraStream, startCamera, stopCamera } = useCamera();
@@ -14,6 +16,12 @@ export function CameraPage() {
 
   const [validating, setValidating] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
+
+  const getValidationStatus = (): 'success' | 'error' | 'loading' => {
+    if (validationMessage.includes('✅')) return 'success';
+    if (validationMessage.includes('❌')) return 'error';
+    return 'loading';
+  };
 
   useEffect(() => {
     // Auto-start camera when page loads
@@ -60,7 +68,10 @@ export function CameraPage() {
         }, 2000);
       }
     } catch (error) {
-      console.error('Validation error:', error);
+      handleError(error, {
+        action: 'task_validation',
+        userMessage: 'Error validating task. Please try again.',
+      });
       setValidationMessage('❌ Error validating task. Please try again.');
       setValidating(false);
     }
@@ -148,13 +159,7 @@ export function CameraPage() {
 
         {/* Validation Message */}
         {validationMessage && (
-          <div className={`rounded-lg p-4 mb-6 text-center ${
-            validationMessage.includes('✅') ? 'bg-green-100 text-green-800' :
-            validationMessage.includes('❌') ? 'bg-red-100 text-red-800' :
-            'bg-blue-100 text-blue-800'
-          }`}>
-            <p className="font-semibold">{validationMessage}</p>
-          </div>
+          <StatusMessage message={validationMessage} type={getValidationStatus()} />
         )}
 
         {/* Submit Button */}

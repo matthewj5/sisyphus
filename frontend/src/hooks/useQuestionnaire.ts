@@ -1,5 +1,6 @@
 import { useAppContext } from '../context/AppContext';
 import { questionnaireData } from '../data/questionnaireData';
+import { validateFields } from '../utils/validators';
 
 export function useQuestionnaire() {
   const {
@@ -17,26 +18,13 @@ export function useQuestionnaire() {
   const validateCurrentSection = (): boolean => {
     if (!currentSection) return false;
 
-    for (const question of currentSection.questions) {
-      if (!question.required) continue;
+    const errors = validateFields(
+      currentSection.questions,
+      questionnaire.formResponses,
+      currentSection.id
+    );
 
-      const key = `${currentSection.id}_${question.id}`;
-      const value = questionnaire.formResponses[key];
-
-      if (!value || value.trim() === '') {
-        return false;
-      }
-
-      // Email validation
-      if (question.type === 'email') {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+    return Object.keys(errors).length === 0;
   };
 
   const nextSection = () => {

@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppContext } from '../context/AppContext';
 
 /**
  * Manages the countdown timer interval and auto-completion when time runs out
+ * Uses useRef to prevent memory leaks from abandoned intervals
  */
 export function useTimerInterval(
   markTaskCompleted: () => void,
@@ -15,11 +16,20 @@ export function useTimerInterval(
     setTimerInterval,
   } = useAppContext();
 
+  const intervalRef = useRef<number | null>(null);
+
   useEffect(() => {
-    if (!timer.timerStarted || timer.timeRemaining <= 0) {
+    // Always cleanup previous interval when timer stops
+    if (!timer.timerStarted) {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        setTimerInterval(null);
+        intervalRef.current = null;
+      }
       return;
     }
 
+    // Start new interval
     const interval = window.setInterval(() => {
       setTimeRemaining(timer.timeRemaining - 1);
 
@@ -31,12 +41,23 @@ export function useTimerInterval(
       }
     }, 1000);
 
+    intervalRef.current = interval;
     setTimerInterval(interval);
 
     return () => {
       if (interval) {
         clearInterval(interval);
+        intervalRef.current = null;
       }
     };
   }, [timer.timerStarted, timer.timeRemaining]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
 }

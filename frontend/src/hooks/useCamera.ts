@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useAppContext } from '../context/AppContext';
+import { handleError } from '../utils/errorHandling';
 
 export function useCamera() {
   const { camera, setCameraStream } = useAppContext();
@@ -18,8 +19,11 @@ export function useCamera() {
         videoRef.current.srcObject = stream;
       }
     } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Failed to access camera. Please grant camera permissions.');
+      handleError(error, {
+        action: 'camera_access',
+        userMessage: 'Failed to access camera. Please grant camera permissions.',
+        shouldAlert: true,
+      });
     }
   };
 
