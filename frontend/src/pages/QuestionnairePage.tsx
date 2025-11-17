@@ -96,34 +96,6 @@ export function QuestionnairePage() {
           })}
         </div>
 
-        {/* Disclaimer (shown on last section) */}
-        {isLastSection && questionnaireData.disclaimer && (
-          <div className="mb-8 bg-red-50 border-2 border-red-200 rounded-lg p-6">
-            <h3 className="text-xl font-bold text-red-800 mb-3">
-              ⚠️ {questionnaireData.disclaimer.title}
-            </h3>
-            <p className="text-sm text-red-700 mb-3">{questionnaireData.disclaimer.text}</p>
-            <ul className="text-xs text-red-600 space-y-2 mb-4 ml-4">
-              {questionnaireData.disclaimer.terms.map((term, idx) => (
-                <li key={idx} className="list-disc">
-                  {term}
-                </li>
-              ))}
-            </ul>
-            <div className="space-y-2 text-xs text-red-700">
-              <p>
-                <strong>Privacy Policy:</strong> {questionnaireData.disclaimer.privacyPolicy}
-              </p>
-              <p>
-                <strong>Data Retention:</strong> {questionnaireData.disclaimer.dataRetention}
-              </p>
-              <p className="font-bold text-red-800 mt-4">
-                {questionnaireData.disclaimer.warning}
-              </p>
-            </div>
-          </div>
-        )}
-
         {/* Navigation Buttons */}
         <div className="flex justify-between items-center">
           <div>
