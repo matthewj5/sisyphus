@@ -45,6 +45,7 @@ export function useTimerInterval(
     console.log('Starting new interval...');
     // Start new interval
     const interval = window.setInterval(() => {
+      console.log('>>> INTERVAL CALLBACK FIRED <<<');
       // Use functional update to avoid stale closure
       setTimeRemaining((prevTime) => {
         console.log('Interval tick. prevTime:', prevTime, 'type:', typeof prevTime);
@@ -70,6 +71,7 @@ export function useTimerInterval(
 
     intervalRef.current = interval;
     setTimerInterval(interval);
+    console.log('Interval created with ID:', interval);
 
     return () => {
       if (interval) {
