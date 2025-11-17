@@ -76,7 +76,7 @@ export function useTimerInterval(
         intervalRef.current = null;
       }
     };
-  }, [timer.timerStarted, setTimeRemaining, setTimerStarted, setTimerInterval]);
+  }, [timer.timerStarted]); // setTimeRemaining, setTimerStarted, setTimerInterval are stable setState functions
 
   // Cleanup on unmount
   useEffect(() => {
