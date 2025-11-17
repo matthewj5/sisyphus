@@ -84,39 +84,42 @@ export function TimerPage() {
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <h3 className="text-xl font-semibold text-earth-dark-brown mb-4">Task Queue</h3>
 
-          {tasks.length === 0 ? (
+          {tasks.filter(t => !t.completed).length === 0 ? (
             <p className="text-center text-earth-brown py-8">
               Add tasks to begin your journey
             </p>
           ) : (
             <ul className="space-y-2">
-              {tasks.map((task, index) => (
-                <li
-                  key={task.id}
-                  className={`flex items-center justify-between p-3 rounded ${
-                    index === currentTaskIndex && timerStarted
-                      ? 'bg-earth-muted-green text-white'
-                      : 'bg-earth-light-sand'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-sm">
-                      {index === currentTaskIndex && timerStarted ? '▶' : index + 1}
-                    </span>
-                    <span className="font-medium">{task.text}</span>
-                    <span className="text-sm opacity-75">({formatTime(task.duration)})</span>
-                  </div>
+              {tasks.filter(t => !t.completed).map((task, index) => {
+                const originalIndex = tasks.indexOf(task);
+                return (
+                  <li
+                    key={task.id}
+                    className={`flex items-center justify-between p-3 rounded ${
+                      originalIndex === currentTaskIndex && timerStarted
+                        ? 'bg-earth-muted-green text-white'
+                        : 'bg-earth-light-sand'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-mono text-sm">
+                        {originalIndex === currentTaskIndex && timerStarted ? '▶' : index + 1}
+                      </span>
+                      <span className="font-medium">{task.text}</span>
+                      <span className="text-sm opacity-75">({formatTime(task.duration)})</span>
+                    </div>
 
-                  {!timerStarted && (
-                    <button
-                      onClick={() => deleteTask(task.id)}
-                      className="btn-delete"
-                    >
-                      Delete
-                    </button>
-                  )}
-                </li>
-              ))}
+                    {!timerStarted && (
+                      <button
+                        onClick={() => deleteTask(task.id)}
+                        className="btn-delete"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

@@ -50,25 +50,20 @@ export function useTimer() {
     const currentTask = timer.tasks[timer.currentTaskIndex];
     if (!currentTask) return;
 
-    // Remove current task from list
-    const updatedTasks = timer.tasks.filter((_, index) => index !== timer.currentTaskIndex);
+    // Mark current task as completed
+    const updatedTasks = timer.tasks.map((task, index) =>
+      index === timer.currentTaskIndex ? { ...task, completed: true } : task
+    );
     setTasks(updatedTasks);
 
     // Move to next task or camera page
-    if (updatedTasks.length > 0) {
-      // Stay at same index (which is now the next task since we removed current)
-      const nextTask = updatedTasks[timer.currentTaskIndex];
-      if (nextTask) {
-        setTimeRemaining(nextTask.duration);
-        setTimerStarted(true);
-      } else {
-        // No more tasks
-        setTimerStarted(false);
-        setCurrentPage('camera');
-      }
+    if (timer.currentTaskIndex < timer.tasks.length - 1) {
+      const nextIndex = timer.currentTaskIndex + 1;
+      setCurrentTaskIndex(nextIndex);
+      setTimeRemaining(timer.tasks[nextIndex].duration);
+      setTimerStarted(true);
     } else {
       // All tasks done, go to camera
-      setCurrentTaskIndex(0);
       setTimerStarted(false);
       setCurrentPage('camera');
     }
