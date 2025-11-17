@@ -84,7 +84,7 @@ export function QuestionnairePage() {
                 ) : (
                   <input
                     type={question.type}
-                    className="form-input"
+                    className="form-input w-full"
                     value={value}
                     onChange={(e) => updateFormResponse(key, e.target.value)}
                     placeholder={question.placeholder}
