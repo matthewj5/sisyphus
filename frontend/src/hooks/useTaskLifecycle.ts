@@ -55,6 +55,12 @@ export function useTaskLifecycle() {
   const startAllTasks = () => {
     if (timer.tasks.length === 0) return;
 
+    console.log('=== startAllTasks ===');
+    console.log('tasks:', timer.tasks);
+    console.log('first task:', timer.tasks[0]);
+    console.log('first task duration:', timer.tasks[0].duration);
+    console.log('====================');
+
     setCurrentTaskIndex(0);
     setTimeRemaining(timer.tasks[0].duration);
     setTimerStarted(true);

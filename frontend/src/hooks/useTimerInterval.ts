@@ -45,10 +45,11 @@ export function useTimerInterval(
     console.log('Starting new interval...');
     // Start new interval
     const interval = window.setInterval(() => {
-      console.log('Interval tick...');
       // Use functional update to avoid stale closure
       setTimeRemaining((prevTime) => {
+        console.log('Interval tick. prevTime:', prevTime, 'type:', typeof prevTime);
         const newTime = prevTime - 1;
+        console.log('newTime:', newTime);
 
         // When time runs out, mark as completed and go to camera page
         if (newTime <= 0) {
