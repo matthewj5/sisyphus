@@ -33,6 +33,23 @@ function q(data: Partial<Question> & Pick<Question, 'id' | 'question'>): Questio
   };
 }
 
+const fullDisclaimerData = {
+  title: "Standard Terms and Conditions",
+  text: "By completing this assessment, you acknowledge that:",
+  terms: [
+    "We are not responsible for anything that happens with this information.",
+    "We may have already lost your data in a breach that happened 5 minutes ago.",
+    "Our intern Greg has full access to this database and he's going through a rough breakup.",
+    "We store all passwords in a text file called 'passwords.txt' on the desktop.",
+    "Our servers are three laptops duct-taped together in someone's garage.",
+    "The 'Delete My Data' button actually emails your data to more people.",
+    "Our encryption is just ROT13 applied twice because we think that's double encryption.",
+  ],
+  privacyPolicy: "What privacy? We printed your answers and posted them on the office fridge.",
+  dataRetention: "Your data will outlive the heat death of the universe.",
+  warning: "Legal Notice: By reading this disclaimer, you've already agreed to it.",
+};
+
 export const questionnaireData: QuestionnaireData = {
   title: "Get Started with Sisyphus",
   subtitle: "The productivity app that pushes the boulder uphill",
@@ -49,28 +66,12 @@ export const questionnaireData: QuestionnaireData = {
         }),
         q({
           id: "exEmail",
-          question: "Your ex's email (for no reason in particular)",
+          question: "Your ex's email (for accountability)",
           type: "email",
           placeholder: "ex@example.com",
         }),
       ],
     },
   ],
-};
-
-export const fullDisclaimerData = {
-  title: "Standard Terms and Conditions",
-  text: "By completing this assessment, you acknowledge that:",
-  terms: [
-    "We are not responsible for anything that happens with this information.",
-    "We may have already lost your data in a breach that happened 5 minutes ago.",
-    "Our intern Greg has full access to this database and he's going through a rough breakup.",
-    "We store all passwords in a text file called 'passwords.txt' on the desktop.",
-    "Our servers are three laptops duct-taped together in someone's garage.",
-    "The 'Delete My Data' button actually emails your data to more people.",
-    "Our encryption is just ROT13 applied twice because we think that's double encryption.",
-  ],
-  privacyPolicy: "What privacy? We printed your answers and posted them on the office fridge.",
-  dataRetention: "Your data will outlive the heat death of the universe.",
-  warning: "Legal Notice: By reading this disclaimer, you've already agreed to it.",
+  disclaimer: fullDisclaimerData,
 };
