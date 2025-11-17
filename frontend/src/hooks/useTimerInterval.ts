@@ -29,8 +29,11 @@ export function useTimerInterval(
   }, [markTaskCompleted, navigateToCamera]);
 
   useEffect(() => {
+    console.log('useTimerInterval effect running. timerStarted:', timer.timerStarted);
+
     // Always cleanup previous interval when timer stops
     if (!timer.timerStarted) {
+      console.log('Timer not started, cleaning up...');
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         setTimerInterval(null);
@@ -39,8 +42,10 @@ export function useTimerInterval(
       return;
     }
 
+    console.log('Starting new interval...');
     // Start new interval
     const interval = window.setInterval(() => {
+      console.log('Interval tick...');
       // Use functional update to avoid stale closure
       setTimeRemaining((prevTime) => {
         const newTime = prevTime - 1;
