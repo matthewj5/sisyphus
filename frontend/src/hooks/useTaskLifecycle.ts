@@ -62,8 +62,12 @@ export function useTaskLifecycle() {
     console.log('====================');
 
     setCurrentTaskIndex(0);
-    setTimeRemaining(timer.tasks[0].duration);
+    const duration = timer.tasks[0].duration;
+    console.log('About to call setTimeRemaining with:', duration, 'type:', typeof duration);
+    setTimeRemaining(duration);
+    console.log('Called setTimeRemaining');
     setTimerStarted(true);
+    console.log('Called setTimerStarted(true)');
   };
 
   // Skip current task and move to next, or go to camera if done
