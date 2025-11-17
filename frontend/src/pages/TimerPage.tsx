@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTimer } from '../hooks/useTimer';
 import { Button } from '../components/common/Button';
+import { TaskItem } from '../components/timer/TaskItem';
 import { formatTime, parseTimeInput } from '../utils/timeFormatters';
 import type { Task } from '../types';
 
@@ -93,36 +94,16 @@ export function TimerPage() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {incompleteTasks.map((task, index) => {
-                const isCurrentTask = currentTask?.id === task.id && timerStarted;
-                return (
-                  <li
-                    key={task.id}
-                    className={`flex items-center justify-between p-3 rounded ${
-                      isCurrentTask
-                        ? 'bg-earth-muted-green text-white'
-                        : 'bg-earth-light-sand text-earth-dark-brown'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono text-sm">
-                        {isCurrentTask ? '▶' : index + 1}
-                      </span>
-                    <span className="font-medium">{task.text}</span>
-                    <span className="text-sm opacity-75">({formatTime(task.duration)})</span>
-                  </div>
-
-                  {!timerStarted && (
-                    <button
-                      onClick={() => deleteTask(task.id)}
-                      className="btn-delete"
-                    >
-                      Delete
-                    </button>
-                  )}
-                </li>
-              );
-              })}
+              {incompleteTasks.map((task, index) => (
+                <TaskItem
+                  key={task.id}
+                  task={task}
+                  index={index}
+                  isCurrentTask={currentTask?.id === task.id && timerStarted}
+                  timerStarted={timerStarted}
+                  onDelete={deleteTask}
+                />
+              ))}
             </ul>
           )}
         </div>

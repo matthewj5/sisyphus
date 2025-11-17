@@ -1,61 +1,40 @@
 import type { ValidationResponse, NotificationResponse } from '../types';
+import { ApiClient } from './apiClient';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Singleton API client instance
+const client = new ApiClient();
 
+/**
+ * Validate task with images using Claude AI
+ */
 export async function validateTask(
   images: string[],
   taskDescription: string
 ): Promise<ValidationResponse> {
-  const response = await fetch(`${API_BASE_URL}/validate-task`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      images,
-      taskDescription,
-    }),
+  return client.post('/validate-task', {
+    images,
+    taskDescription,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to validate task');
-  }
-
-  return response.json();
 }
 
+/**
+ * Send notification email to ex when user goes to hell
+ */
 export async function notifyHell(
   exEmail: string,
   userName: string,
   reason: string
 ): Promise<NotificationResponse> {
-  const response = await fetch(`${API_BASE_URL}/notify-hell`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      exEmail,
-      userName,
-      reason,
-    }),
+  return client.post('/notify-hell', {
+    exEmail,
+    userName,
+    reason,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to send notification');
-  }
-
-  return response.json();
 }
 
+/**
+ * Check API health status
+ */
 export async function checkStatus(): Promise<{ message: string; timestamp: string; status: string }> {
-  const response = await fetch(`${API_BASE_URL}/status`);
-
-  if (!response.ok) {
-    throw new Error('Failed to check status');
-  }
-
-  return response.json();
+  return client.get('/status');
 }
