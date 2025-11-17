@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useAppContext } from '../context/AppContext';
 
 /**
@@ -18,6 +18,16 @@ export function useTimerInterval(
 
   const intervalRef = useRef<number | null>(null);
 
+  // Store callbacks in refs to avoid recreating interval
+  const markTaskCompletedRef = useRef(markTaskCompleted);
+  const navigateToCameraRef = useRef(navigateToCamera);
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    markTaskCompletedRef.current = markTaskCompleted;
+    navigateToCameraRef.current = navigateToCamera;
+  }, [markTaskCompleted, navigateToCamera]);
+
   useEffect(() => {
     // Always cleanup previous interval when timer stops
     if (!timer.timerStarted) {
@@ -31,14 +41,20 @@ export function useTimerInterval(
 
     // Start new interval
     const interval = window.setInterval(() => {
-      setTimeRemaining(timer.timeRemaining - 1);
+      // Use functional update to avoid stale closure
+      setTimeRemaining((prevTime) => {
+        const newTime = prevTime - 1;
 
-      // When time runs out, mark as completed and go to camera page
-      if (timer.timeRemaining - 1 <= 0) {
-        markTaskCompleted();
-        setTimerStarted(false);
-        navigateToCamera();
-      }
+        // When time runs out, mark as completed and go to camera page
+        if (newTime <= 0) {
+          markTaskCompletedRef.current();
+          setTimerStarted(false);
+          navigateToCameraRef.current();
+          return 0;
+        }
+
+        return newTime;
+      });
     }, 1000);
 
     intervalRef.current = interval;
@@ -50,7 +66,7 @@ export function useTimerInterval(
         intervalRef.current = null;
       }
     };
-  }, [timer.timerStarted, timer.timeRemaining]);
+  }, [timer.timerStarted, setTimeRemaining, setTimerStarted, setTimerInterval]);
 
   // Cleanup on unmount
   useEffect(() => {
