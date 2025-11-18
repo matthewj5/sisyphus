@@ -1,47 +1,298 @@
-# Sisyphus
-Making hard deadlines
+# 🪨 Sisyphus - Making Hard Deadlines
 
-A productivity app that uses camera validation with Claude AI to ensure you're actually working on your tasks. If you fail to prove you're working, you go to hell.
+A productivity accountability app that uses AI-powered task validation to keep you on track. If you fail to prove you're working, your ex gets notified. The boulder never stops rolling.
 
 ## Features
 
 - Task timer with sequential task management
-- Camera-based task validation using Claude AI
-- Questionnaire system
-- Strict accountability (no pausing, no going back!)
+- Camera-based task validation using Claude AI: capture photos from webcam or upload images
+- Accountability: if you fail, we will send an email notification to your ex (or a friend, if you insist)
 
-## Setup
+## Demo
+Here's the [link](https://youtube.com/shorts/gz05Hrbm_4Q) to the demo.
 
-1. Install dependencies:
+## Getting Started
+
+### Prerequisites
+
+- Node.js v22.12+ (or v20.19+)
+- npm or yarn
+- Claude API key from Anthropic
+- Gmail app password (for email notifications)
+
+### Environment Setup
+
+1. **Backend Environment Variables**
+
+Create `backend/.env`:
+
+```env
+# Required
+ANTHROPIC_API_KEY=your_claude_api_key_here
+
+# Optional (for email notifications)
+EMAIL_USER=your_gmail@gmail.com
+EMAIL_PASSWORD=your_gmail_app_password
+
+# Server port (optional, defaults to 3000)
+PORT=3000
+```
+
+2. **Frontend Environment Variables**
+
+Create `frontend/.env.local` (optional):
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+### Installation
+
 ```bash
+# Install backend dependencies
+cd backend
+npm install
+
+# Install frontend dependencies
+cd ../frontend
 npm install
 ```
 
-2. Set up your Claude API key:
-   - Copy `.env.example` to `.env`
-   - Get your API key from https://console.anthropic.com/
-   - Add your API key to `.env`:
-     ```
-     ANTHROPIC_API_KEY=your_actual_api_key_here
-     ```
+### Running the Application
 
-3. Run the server:
+**Development Mode (recommended):**
+
+Open two terminal windows:
+
 ```bash
-npm start
+# Terminal 1 - Backend (runs on port 3000)
+cd backend
+npm run dev
+
+# Terminal 2 - Frontend (runs on port 5173)
+cd frontend
+npm run dev
 ```
 
-4. Open http://localhost:3000 in your browser
+Then open http://localhost:5173 in your browser.
 
-## How It Works
+<!-- **Production Build:**
 
-1. Complete the questionnaire (first time only)
-2. Add your tasks with durations
-3. Start working!
-4. When each task timer completes, you must take a photo proving you're working
-5. Claude AI analyzes the photo to verify you're actually working on the task
-6. If validation passes, continue to the next task
-7. If validation fails, you go to hell and start over
+```bash
+# Build backend
+cd backend
+npm run build
+npm start
 
-## Camera Permissions
+# Build frontend
+cd frontend
+npm run build
+npm run preview
+``` -->
 
-The app requires camera access to validate your work. Make sure to grant camera permissions when prompted by your browser.
+<!-- ## 🎯 User Flow
+
+1. **Loading Screen** → Animated Sisyphus pushing boulder (2s)
+2. **Questionnaire** → Enter name + ex's email
+3. **Timer Page** → Add tasks with durations, start timer
+4. **Camera Page** → Timer ends, prove you were working
+5. **Result**:
+   - ✅ **Pass**: Return to timer for next task
+   - ❌ **Fail**: Go to hell, ex gets notified -->
+
+
+<!-- ## Project Structure
+
+This is a **monorepo** with separate frontend and backend:
+
+```
+sisyphus/
+├── frontend/           # React + Vite + TypeScript + Tailwind v4
+│   ├── src/
+│   │   ├── components/   # Reusable UI components
+│   │   ├── pages/        # 5 main pages
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── context/      # Global state management
+│   │   ├── services/     # API client
+│   │   ├── types/        # TypeScript definitions
+│   │   ├── data/         # Questionnaire data
+│   │   └── utils/        # Helper functions
+│   └── package.json
+├── backend/            # Node.js + Express + TypeScript
+│   ├── src/
+│   │   ├── routes/       # API routes
+│   │   ├── controllers/  # Request handlers
+│   │   ├── services/     # Claude API & Email
+│   │   ├── middleware/   # Validation & error handling
+│   │   ├── config/       # Environment config
+│   │   └── types/        # TypeScript definitions
+│   └── package.json
+└── public/             # Original vanilla JS version (archived)
+```
+
+
+## Tech Stack
+
+### Frontend
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Vite 7** - Build tool
+- **Tailwind CSS v4** - Styling
+- **React Context** - State management
+
+### Backend
+- **Node.js** - Runtime
+- **Express 5** - Web framework
+- **TypeScript** - Type safety
+- **Zod** - Request validation
+- **Anthropic Claude API** - AI task validation
+- **Nodemailer** - Email notifications
+
+## Questionnaire Options
+Located in `frontend/src/data/questionnaireData.full.ts`
+
+**To restore:** Copy sections from `.full.ts` back to `questionnaireData.ts`
+
+## API Endpoints
+
+### `GET /api/status`
+Health check endpoint
+
+**Response:**
+```json
+{
+  "message": "The boulder rolls uphill! Keep pushing! 🪨",
+  "timestamp": "2025-01-16T...",
+  "status": "active"
+}
+```
+
+### `POST /api/validate-task`
+Validate task with Claude AI
+
+**Request:**
+```json
+{
+  "images": ["data:image/jpeg;base64,..."],
+  "taskDescription": "Complete project documentation"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "explanation": "User appears to be working on documentation with laptop visible"
+}
+```
+
+### `POST /api/notify-hell`
+Send failure notification
+
+**Request:**
+```json
+{
+  "exEmail": "ex@example.com",
+  "userName": "John Doe",
+  "reason": "Failed task validation"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Email sent successfully"
+}
+```
+
+## 🔧 Development Commands
+
+### Backend
+```bash
+npm run dev         # Start dev server with hot reload
+npm run build       # Compile TypeScript
+npm run start       # Run compiled code
+npm run type-check  # Check TypeScript types
+```
+
+### Frontend
+```bash
+npm run dev      # Start Vite dev server
+npm run build    # Build for production
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
+```
+
+## Key Files
+
+### Frontend
+- `src/App.tsx` - Main app with page routing
+- `src/context/AppContext.tsx` - Global state management
+- `src/hooks/useTimer.ts` - Timer logic
+- `src/hooks/useCamera.ts` - Camera management
+- `src/hooks/useImageCapture.ts` - Photo capture/upload
+- `src/data/questionnaireData.ts` - Current questionnaire (2 questions)
+- `src/data/questionnaireData.full.ts` - Archived full questionnaire
+
+### Backend
+- `src/index.ts` - Server entry point
+- `src/app.ts` - Express app configuration
+- `src/routes/index.ts` - API routes
+- `src/services/claudeService.ts` - Claude AI integration
+- `src/services/emailService.ts` - Email notifications
+- `src/middleware/validators.ts` - Zod validation schemas
+
+## Styling
+
+Uses Tailwind v4 with custom earth-tone theme:
+
+```javascript
+colors: {
+  earth: {
+    brown: '#a2836e',
+    'muted-green': '#6e7f5e',
+    sand: '#e5d9c5',
+    'light-sand': '#f5f0e6',
+    'dark-brown': '#3e2c19',
+  }
+}
+```
+
+Custom component classes:
+- `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-danger`, `.btn-delete`
+- `.form-input`, `.form-label`, `.form-textarea`, `.form-select`
+
+## Troubleshooting
+
+**Build fails with "Vite requires Node.js version..."**
+- Upgrade to Node.js v22.12+ or v20.19+
+
+**Camera not working**
+- Grant camera permissions in browser
+- Check HTTPS (required for getUserMedia)
+- Use `localhost` for development (HTTPS not needed)
+
+**API calls fail with CORS errors**
+- Ensure backend is running on port 3000
+- Check Vite proxy configuration in `vite.config.ts`
+- CORS is enabled in `backend/src/app.ts`
+
+**Email not sending**
+- Check Gmail App Password (not regular password)
+- Enable "Less secure app access" in Gmail
+- Verify EMAIL_USER and EMAIL_PASSWORD in `.env`
+
+## License
+
+ISC
+
+## Contributing
+
+This is a personal project, but feel free to fork and modify!
+
+---
+
+ -->
+
+ **"One must imagine Sisyphus happy."** - Albert Camus
