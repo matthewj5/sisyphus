@@ -2,46 +2,16 @@
 
 A productivity accountability app that uses AI-powered task validation to keep you on track. If you fail to prove you're working, your ex gets notified. The boulder never stops rolling.
 
-## 🏗️ Project Structure
+## Features
 
-This is a **monorepo** with separate frontend and backend:
+- Task timer with sequential task management
+- Camera-based task validation using Claude AI: capture photos from webcam or upload images
+- Accountability: if you fail, we will send an email notification to your ex (or a friend, if you insist)
 
-```
-sisyphus/
-├── frontend/           # React + Vite + TypeScript + Tailwind v4
-│   ├── src/
-│   │   ├── components/   # Reusable UI components
-│   │   ├── pages/        # 5 main pages
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── context/      # Global state management
-│   │   ├── services/     # API client
-│   │   ├── types/        # TypeScript definitions
-│   │   ├── data/         # Questionnaire data
-│   │   └── utils/        # Helper functions
-│   └── package.json
-├── backend/            # Node.js + Express + TypeScript
-│   ├── src/
-│   │   ├── routes/       # API routes
-│   │   ├── controllers/  # Request handlers
-│   │   ├── services/     # Claude API & Email
-│   │   ├── middleware/   # Validation & error handling
-│   │   ├── config/       # Environment config
-│   │   └── types/        # TypeScript definitions
-│   └── package.json
-└── public/             # Original vanilla JS version (archived)
-```
+## Demo
+Here's the [link](https://youtube.com/shorts/gz05Hrbm_4Q) to the demo.
 
-## ✨ Features
-
-- **Simplified Questionnaire**: Collects your name and ex's email for accountability
-- **Task Timer**: Create tasks with durations (MM:SS format), no pausing allowed
-- **AI Validation**: Uses Claude Sonnet 4.5 to verify you're actually working via camera/photos
-- **Accountability**: Fails send an email notification to your ex
-- **Multi-Image Support**: Capture photos from webcam or upload images
-- **TypeScript Throughout**: Full type safety in both frontend and backend
-- **Modern Stack**: React 19, Vite 7, Tailwind v4, Express 5
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -106,7 +76,7 @@ npm run dev
 
 Then open http://localhost:5173 in your browser.
 
-**Production Build:**
+<!-- **Production Build:**
 
 ```bash
 # Build backend
@@ -118,9 +88,9 @@ npm start
 cd frontend
 npm run build
 npm run preview
-```
+``` -->
 
-## 🎯 User Flow
+<!-- ## 🎯 User Flow
 
 1. **Loading Screen** → Animated Sisyphus pushing boulder (2s)
 2. **Questionnaire** → Enter name + ex's email
@@ -128,9 +98,40 @@ npm run preview
 4. **Camera Page** → Timer ends, prove you were working
 5. **Result**:
    - ✅ **Pass**: Return to timer for next task
-   - ❌ **Fail**: Go to hell, ex gets notified
+   - ❌ **Fail**: Go to hell, ex gets notified -->
 
-## 📦 Tech Stack
+
+<!-- ## Project Structure
+
+This is a **monorepo** with separate frontend and backend:
+
+```
+sisyphus/
+├── frontend/           # React + Vite + TypeScript + Tailwind v4
+│   ├── src/
+│   │   ├── components/   # Reusable UI components
+│   │   ├── pages/        # 5 main pages
+│   │   ├── hooks/        # Custom React hooks
+│   │   ├── context/      # Global state management
+│   │   ├── services/     # API client
+│   │   ├── types/        # TypeScript definitions
+│   │   ├── data/         # Questionnaire data
+│   │   └── utils/        # Helper functions
+│   └── package.json
+├── backend/            # Node.js + Express + TypeScript
+│   ├── src/
+│   │   ├── routes/       # API routes
+│   │   ├── controllers/  # Request handlers
+│   │   ├── services/     # Claude API & Email
+│   │   ├── middleware/   # Validation & error handling
+│   │   ├── config/       # Environment config
+│   │   └── types/        # TypeScript definitions
+│   └── package.json
+└── public/             # Original vanilla JS version (archived)
+```
+
+
+## Tech Stack
 
 ### Frontend
 - **React 19** - UI library
@@ -147,29 +148,12 @@ npm run preview
 - **Anthropic Claude API** - AI task validation
 - **Nodemailer** - Email notifications
 
-## 🎨 Questionnaire Options
-
-### Current: Simplified Version
-- Only 2 questions (name + ex email)
-- Quick onboarding
-- Can be skipped
-
-### Archived: Full Version
+## Questionnaire Options
 Located in `frontend/src/data/questionnaireData.full.ts`
-
-40+ hilarious questions across 8 sections:
-- Basic Contact Information
-- Professional & Identity Verification
-- Account Security Questions
-- Social & Behavioral Analytics
-- Consumer & Digital Behavior Profile
-- Health and Emotional Intelligence Assessment
-- Relationship History Assessment
-- Comprehensive Background & Financial Verification
 
 **To restore:** Copy sections from `.full.ts` back to `questionnaireData.ts`
 
-## 📝 API Endpoints
+## API Endpoints
 
 ### `GET /api/status`
 Health check endpoint
@@ -240,7 +224,7 @@ npm run preview  # Preview production build
 npm run lint     # Run ESLint
 ```
 
-## 📂 Key Files
+## Key Files
 
 ### Frontend
 - `src/App.tsx` - Main app with page routing
@@ -259,7 +243,7 @@ npm run lint     # Run ESLint
 - `src/services/emailService.ts` - Email notifications
 - `src/middleware/validators.ts` - Zod validation schemas
 
-## 🎨 Styling
+## Styling
 
 Uses Tailwind v4 with custom earth-tone theme:
 
@@ -279,7 +263,7 @@ Custom component classes:
 - `.btn`, `.btn-primary`, `.btn-secondary`, `.btn-danger`, `.btn-delete`
 - `.form-input`, `.form-label`, `.form-textarea`, `.form-select`
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 **Build fails with "Vite requires Node.js version..."**
 - Upgrade to Node.js v22.12+ or v20.19+
@@ -299,14 +283,16 @@ Custom component classes:
 - Enable "Less secure app access" in Gmail
 - Verify EMAIL_USER and EMAIL_PASSWORD in `.env`
 
-## 📄 License
+## License
 
 ISC
 
-## 🤝 Contributing
+## Contributing
 
 This is a personal project, but feel free to fork and modify!
 
 ---
 
-**"One must imagine Sisyphus happy."** - Albert Camus
+ -->
+
+ **"One must imagine Sisyphus happy."** - Albert Camus
